@@ -15,7 +15,8 @@
 
 var wmeSpeedsVersion = "0.1";
 var wmeSpeedsInit = false;
-var wmeSpeedsColors = ['#f00', '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D'];
+var wmeSpeedsColors = ['#f00', '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
+var wmeSpeedsMaxSpeed = 131;
 
 
 /* =========================================================================== */
@@ -69,14 +70,24 @@ function highlightSegments(event) {
       }
 
       if (speed1allow && typeof attributes.fwdMaxSpeed == 'number') {
-        speed1 = Math.ceil(attributes.fwdMaxSpeed / 10);
+        if (attributes.fwdMaxSpeed >= wmeSpeedsMaxSpeed) {
+          speed1 = Math.ceil(wmeSpeedsMaxSpeed / 10);
+        }
+        else {
+          speed1 = Math.ceil(attributes.fwdMaxSpeed / 10);
+        }
       }
       else {
         speed1 = 0;
       }
 
       if (speed2allow && typeof attributes.revMaxSpeed == 'number') {
-        speed2 = Math.ceil(attributes.revMaxSpeed / 10);
+        if (attributes.revMaxSpeed >= wmeSpeedsMaxSpeed) {
+          speed2 = Math.ceil(wmeSpeedsMaxSpeed / 10);
+        }
+        else {
+          speed2 = Math.ceil(attributes.revMaxSpeed / 10);
+        }
       }
       else {
         speed2 = 0;
