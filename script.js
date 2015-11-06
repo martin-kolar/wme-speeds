@@ -4,7 +4,7 @@
 // @author              Martin Kolář (based from WME Color Highlights v. 1.98)
 // @description         Adds colours to road segments to show their speeds
 // @include             https://editor-beta.waze.com/*
-// @version             0.1
+// @version             0.1.1
 // @grant               none
 // ==/UserScript==
 
