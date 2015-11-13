@@ -6,7 +6,7 @@
 // @include             https://editor-beta.waze.com/*
 // @include             https://www.waze.com/editor/*
 // @include             https://www.waze.com/*/editor/*
-// @version             0.1.3
+// @version             0.1.4
 // @grant               none
 // ==/UserScript==
 
@@ -15,11 +15,13 @@
 
 // global variables
 
-var wmeSpeedsVersion = "0.1.3";
+var wmeSpeedsVersion = "0.1.4";
 var wmeSpeedsInit = false;
 var wmeSpeedsColors = ['#f00', '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
+var wmeSpeedsAvailableColor = ['#f00', '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#ff00ff', '#000', '#ffffff', '#999999'];
 var wmeSpeedsMaxSpeed = 131;
 var wmeSpeedsLayer;
+var wmeResetColors = false;
 
 
 /* =========================================================================== */
@@ -27,6 +29,8 @@ function highlightSpeedsSegments(event) {
   // console.log('highlightSpeedsSegments');
 
   if (wmeSpeedsLayer.getVisibility()) {
+    wmeResetColors = true;
+
     for (var seg in Waze.model.segments.objects) {
       var segment = Waze.model.segments.get(seg);
       var attributes = segment.attributes;
@@ -164,7 +168,9 @@ function highlightSpeedsSegments(event) {
       }
     } // end of loop
   }
-  else {
+  else if (wmeResetColors) {
+    wmeResetColors = false;
+
     for (var seg in Waze.model.segments.objects) {
       var segment = Waze.model.segments.get(seg);
       var line = getId(segment.geometry.id);
@@ -173,9 +179,15 @@ function highlightSpeedsSegments(event) {
         continue;
       }
 
-      line.setAttribute("stroke","#dd7700");
-      line.setAttribute("stroke-opacity",0.001);
-      line.setAttribute("stroke-dasharray", "none");
+      // turn off all highlights
+      var opacity = line.getAttribute("stroke-opacity");
+      var stroke = line.getAttribute("stroke");
+
+      if ((opacity > 0.1 && opacity < 1) || (wmeSpeedsAvailableColor.indexOf(stroke) != -1)) {
+        line.setAttribute("stroke","#dd7700");
+        line.setAttribute("stroke-opacity",0.001);
+        line.setAttribute("stroke-dasharray", "none");
+      }
     }
   }
 } // end of function
