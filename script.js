@@ -21,7 +21,8 @@ var wmeSpeedsColors = ['#f00', '#321325', '#540804', '#BA1200', '#FA4A48', '#F39
 var wmeSpeedsAvailableColor = ['#f00', '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#ff00ff', '#000', '#ffffff', '#999999'];
 var wmeSpeedsMaxSpeed = 131;
 var wmeSpeedsLayer;
-var wmeResetColors = false;
+var wmeSpeedsResetColors = false;
+var wmeSpeedsNonDrivableSegments = [5, 10, 16, 18, 19, 20, 17, 15];
 
 
 /* =========================================================================== */
@@ -29,7 +30,7 @@ function highlightSpeedsSegments(event) {
   // console.log('highlightSpeedsSegments');
 
   if (wmeSpeedsLayer.getVisibility()) {
-    wmeResetColors = true;
+    wmeSpeedsResetColors = true;
 
     for (var seg in Waze.model.segments.objects) {
       var segment = Waze.model.segments.get(seg);
@@ -39,7 +40,6 @@ function highlightSpeedsSegments(event) {
       if (line === null) {
         continue;
       }
-
       // check that WME hasn't highlighted this segment
       var opacity = line.getAttribute("stroke-opacity");
       var lineWidth = line.getAttribute("stroke-width");
@@ -49,12 +49,17 @@ function highlightSpeedsSegments(event) {
 
       // turn off highlights when roads are no longer visible
       var roadType = attributes.roadType;
-      if (Waze.map.zoom <= 3 && (roadType < 2 || roadType > 7)) {
+
+      if (Waze.map.zoom <= 3 && (roadType < 2 || roadType > 7 || roadType == 5)) {
         if (opacity > 0.1) {
           line.setAttribute("stroke","#dd7700");
           line.setAttribute("stroke-opacity",0.001);
           line.setAttribute("stroke-dasharray", "none");
         }
+        continue;
+      }
+
+      if (wmeSpeedsNonDrivableSegments.indexOf(roadType) != -1) {
         continue;
       }
 
@@ -181,8 +186,8 @@ function highlightSpeedsSegments(event) {
       }
     } // end of loop
   }
-  else if (wmeResetColors) {
-    wmeResetColors = false;
+  else if (wmeSpeedsResetColors) {
+    wmeSpeedsResetColors = false;
 
     for (var seg in Waze.model.segments.objects) {
       var segment = Waze.model.segments.get(seg);
