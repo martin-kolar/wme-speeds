@@ -85,6 +85,10 @@ function highlightSpeedsSegments(event) {
           }
           else {
             speed1 = Math.ceil(attributes.fwdMaxSpeed / 10);
+
+            if (attributes.fwdMaxSpeed % 10 != 0) {
+              newDashes = "30 30";
+            }
           }
         }
         else {
@@ -97,6 +101,10 @@ function highlightSpeedsSegments(event) {
           }
           else {
             speed2 = Math.ceil(attributes.revMaxSpeed / 10);
+
+            if (attributes.revMaxSpeed % 10 != 0) {
+              newDashes = "30 30";
+            }
           }
         }
         else {
@@ -134,7 +142,12 @@ function highlightSpeedsSegments(event) {
               newColor = speed2color;
             }
 
-            newDashes = "10 10";
+            if (newDashes == "none") {
+              newDashes = "10 10";
+            }
+            else {
+              newDashes = "20 20";
+            }
           }
           else {
             newColor = speed1color;
