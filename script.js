@@ -85,6 +85,8 @@ function highlightSpeedsSegments(event) {
         }
 
         if (speed1allow && typeof attributes.fwdMaxSpeed == 'number') {
+          speed1Full = attributes.fwdMaxSpeed;
+
           if (attributes.fwdMaxSpeed >= wmeSpeedsMaxSpeed) {
             speed1 = Math.ceil(wmeSpeedsMaxSpeed / 10);
           }
@@ -101,6 +103,8 @@ function highlightSpeedsSegments(event) {
         }
 
         if (speed2allow && typeof attributes.revMaxSpeed == 'number') {
+          speed2Full = attributes.revMaxSpeed;
+
           if (attributes.revMaxSpeed >= wmeSpeedsMaxSpeed) {
             speed2 = Math.ceil(wmeSpeedsMaxSpeed / 10);
           }
@@ -139,7 +143,7 @@ function highlightSpeedsSegments(event) {
             newColor = '#ff00ff';
             newWidth = 9;
           }
-          else if (speed1 != speed2) {
+          else if (speed1Full != speed2Full) {
             if (speed1 < speed2) {
               newColor = speed1color;
             }
