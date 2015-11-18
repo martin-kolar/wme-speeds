@@ -229,6 +229,11 @@ function getId(node) {
   return document.getElementById(node);
 }
 
+function changeLayer()
+{
+  localStorage.DrawSegmentSpeeds = wmeSpeedsLayer.getVisibility();
+}
+
 /* =========================================================================== */
 function initialiseSpeedsHighlights()
 {
@@ -263,6 +268,7 @@ function initialiseSpeedsHighlights()
 
   I18n.translations.en.layers.name["__DrawSegmentSpeeds"] = "WME Speeds";
   unsafeWindow.Waze.map.addLayer(wmeSpeedsLayer);
+
   if (localStorage.DrawSegmentSpeeds) {
     wmeSpeedsLayer.setVisibility(localStorage.DrawSegmentSpeeds == "true");
   } else {
@@ -280,6 +286,7 @@ function initialiseSpeedsHighlights()
 
   // register some events...
   Waze.map.events.register("zoomend", null, highlightSpeedsSegments);
+  Waze.map.events.register("changelayer", null, changeLayer);
 
   wmeSpeedsInit = true;
 }
