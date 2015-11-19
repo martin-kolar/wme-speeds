@@ -23,6 +23,8 @@ var wmeSpeedsMaxSpeed = 131;
 var wmeSpeedsLayer;
 var wmeSpeedsResetColors = false;
 var wmeSpeedsNonDrivableSegments = [5, 10, 16, 18, 19, 20, 17, 15];
+var wmeSpeedsMiles = false;
+var wmeSpeedsKmphToMphRatio = 0.621371192;
 
 
 /* =========================================================================== */
@@ -85,15 +87,20 @@ function highlightSpeedsSegments(event) {
         }
 
         if (speed1allow && typeof attributes.fwdMaxSpeed == 'number') {
-          speed1Full = attributes.fwdMaxSpeed;
+          if (wmeSpeedsMiles) {
+            speed1Full = kmphToMph(attributes.fwdMaxSpeed);
+          }
+          else {
+            speed1Full = attributes.fwdMaxSpeed;
+          }
 
-          if (attributes.fwdMaxSpeed >= wmeSpeedsMaxSpeed) {
+          if (speed1Full >= wmeSpeedsMaxSpeed) {
             speed1 = Math.ceil(wmeSpeedsMaxSpeed / 10);
           }
           else {
-            speed1 = Math.ceil(attributes.fwdMaxSpeed / 10);
+            speed1 = Math.ceil(speed1Full / 10);
 
-            if (attributes.fwdMaxSpeed % 10 != 0) {
+            if (speed1Full % 10 != 0) {
               newDashes = "30 30";
             }
           }
@@ -103,15 +110,20 @@ function highlightSpeedsSegments(event) {
         }
 
         if (speed2allow && typeof attributes.revMaxSpeed == 'number') {
-          speed2Full = attributes.revMaxSpeed;
+          if (wmeSpeedsMiles) {
+            speed2Full = kmphToMph(attributes.revMaxSpeed);
+          }
+          else {
+            speed2Full = attributes.revMaxSpeed;
+          }
 
-          if (attributes.revMaxSpeed >= wmeSpeedsMaxSpeed) {
+          if (speed2Full >= wmeSpeedsMaxSpeed) {
             speed2 = Math.ceil(wmeSpeedsMaxSpeed / 10);
           }
           else {
-            speed2 = Math.ceil(attributes.revMaxSpeed / 10);
+            speed2 = Math.ceil(speed2Full / 10);
 
-            if (attributes.revMaxSpeed % 10 != 0) {
+            if (speed2Full % 10 != 0) {
               newDashes = "30 30";
             }
           }
@@ -234,6 +246,11 @@ function changeLayer()
   localStorage.DrawSegmentSpeeds = wmeSpeedsLayer.getVisibility();
 }
 
+function kmphToMph(kmph) {
+  console.log('kmph', kmph, 'mph', Math.round(kmph * wmeSpeedsKmphToMphRatio));
+  return Math.round(kmph * wmeSpeedsKmphToMphRatio);
+}
+
 /* =========================================================================== */
 function initialiseSpeedsHighlights()
 {
@@ -282,6 +299,14 @@ function initialiseSpeedsHighlights()
   window.addEventListener("load", function(e) {
     var mapProblems = getId('map-problems-explanation')
     if (mapProblems !== null) mapProblems.style.display = "none";
+  });
+
+  $('input[name=units-radio]').parent().each(function() {
+    if ($(this).hasClass('active')) {
+      if ($(this).find('input').val() == true) {
+        wmeSpeedsMiles = true;
+      }
+    }
   });
 
   // register some events...
