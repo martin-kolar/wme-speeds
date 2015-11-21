@@ -6,7 +6,7 @@
 // @include             https://editor-beta.waze.com/*
 // @include             https://www.waze.com/editor/*
 // @include             https://www.waze.com/*/editor/*
-// @version             0.2
+// @version             0.2.1
 // @grant               none
 // ==/UserScript==
 
@@ -15,7 +15,7 @@
 
 // global variables
 
-var wmeSpeedsVersion = "0.2";
+var wmeSpeedsVersion = "0.2.1";
 var wmeSpeedsInit = false;
 var wmeSpeedsColors =     ['#ff0000',    '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
 var wmeSpeedsTextColors = ['#000000', '#ffffff', '#ffffff', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#ffffff', '#ffffff'];
@@ -31,6 +31,7 @@ var wmeSpeedsNonDrivableSegments = [5, 10, 16, 18, 19, 20, 17, 15];
 var wmeSpeedsMiles = false;
 var wmeSpeedsKmphToMphRatio = 0.621371192;
 var wmeSpeedsInvertSpeedsColors, wmeSpeedsHighlightOneWay, wmeSpeedsNonDrivableSpeedsColors;
+var wmeSpeedsChatAddonCounter = 0;
 
 //  language settings
 var wmeSpeedsAllowLanguage = ['cs', 'en'];
@@ -449,6 +450,22 @@ function initialiseSpeedsHighlights()
     console.log("WME Speeds: Waze : NOK");
     setTimeout(initialiseSpeedsHighlights, 500);
     return;
+  }
+
+  if (typeof(me) === 'undefined') {
+    if (wmeSpeedsChatAddonCounter > 10) {
+      console.log("WME Speeds: Stop - WME Chat addon not instal.");
+      alert('WME Speeds needs WME Chat addon - instal or enable - https://greasyfork.org/scripts/2103-wme-chat-addon');
+
+      return ;
+    }
+    else {
+      console.log("WME Speeds: WME Chat addon : NOK");
+      setTimeout(initialiseSpeedsHighlights, 500);
+      wmeSpeedsChatAddonCounter++;
+
+      return;
+    }
   }
 
   wmeSpeedsLayer = new unsafeWindow.OpenLayers.Layer.Vector("Speeds", {
