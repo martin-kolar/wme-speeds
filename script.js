@@ -26,9 +26,11 @@ var wmeSpeedsMaxSpeed = 131;
 var wmeSpeedsMaxMphSpeed = 86;
 var wmeSpeedsLayer;
 var wmeSpeedsResetColors = false;
+var wmeSpeedsHardResetColors = false;
 var wmeSpeedsNonDrivableSegments = [5, 10, 16, 18, 19, 20, 17, 15];
 var wmeSpeedsMiles = false;
 var wmeSpeedsKmphToMphRatio = 0.621371192;
+var wmeSpeedsInvertSpeedsColors, wmeSpeedsHighlightOneWay;
 
 //  language settings
 var wmeSpeedsAllowLanguage = ['cs', 'en'];
@@ -42,6 +44,10 @@ wmeSpeedsTranslation['cs'] = {
   'forumLink': '<a href="https://www.waze.com/forum/viewtopic.php?f=22&t=166406" target="_blank">České fórum</a>',
   'author': 'Autor: martinkolar (4)',
   'version': 'Verze:',
+  'invertSpeedsTitle': 'Invertovat barvy rychlostí',
+  'invertSpeedsContent': 'Zvýrazní pouze segmenty bez rychlosti',
+  'oneWaySpeedsTitle': 'Jednosměrky s rychlostmi',
+  'oneWaySpeedsContent': 'Zvýrazní jednosměrky se špatně nastavenou rychlostí',
 }
 
 //  cs translation
@@ -51,11 +57,29 @@ wmeSpeedsTranslation['en'] = {
   'forumLink': '<a href="https://www.waze.com/forum/viewtopic.php?f=819&t=166497" target="_blank">English discussion</a>',
   'author': 'Author: martinkolar (CZ)',
   'version': 'Version:',
+  'invertSpeedsTitle': 'Invert Speeds',
+  'invertSpeedsContent': 'Highlight segments without speeds',
+  'oneWaySpeedsTitle': 'One-way Speeds',
+  'oneWaySpeedsContent': 'Highlight one-way speeds with two speeds',
 }
 
 /* =========================================================================== */
+function highlightSpeedsSegmentsReset(event) {
+  wmeSpeedsHardResetColors = true;
+  highlightSpeedsSegments();
+}
+
 function highlightSpeedsSegments(event) {
-  if (wmeSpeedsLayer.getVisibility()) {
+  wmeSpeedsInvertSpeedsColors = getId('_wmeSpeedsInvert').checked;
+
+  if (wmeSpeedsLanguage && me.rank >= 3) {
+    wmeSpeedsHighlightOneWay = getId('_wmeSpeedsOneWay').checked;
+  }
+  else {
+    wmeSpeedsHighlightOneWay = false;
+  }
+
+  if (wmeSpeedsLayer.getVisibility() && !wmeSpeedsHardResetColors) {
     wmeSpeedsResetColors = true;
 
     for (var seg in Waze.model.segments.objects) {
@@ -70,8 +94,9 @@ function highlightSpeedsSegments(event) {
       var opacity = line.getAttribute("stroke-opacity");
       var lineWidth = line.getAttribute("stroke-width");
 
-      if (opacity == 1 || lineWidth == 9)
+      if (opacity == 1 || lineWidth == 9) {
         continue;
+      }
 
       // turn off highlights when roads are no longer visible
       var roadType = attributes.roadType;
@@ -98,7 +123,7 @@ function highlightSpeedsSegments(event) {
       var newDashes = "none";
       var newWidth = 8;
 
-      if (roadType != 5 && roadType != 10) {
+      // if (roadType != 5 && roadType != 10) {
         newColor = "#fff";
         newOpacity = 1;
         newWidth = 8;
@@ -191,15 +216,15 @@ function highlightSpeedsSegments(event) {
           continue;
         }
 
-        // if ((!attributes.fwdDirection && typeof attributes.fwdMaxSpeed == 'number') || (!attributes.revDirection && typeof attributes.revMaxSpeed == 'number')) {
-        //   newDashes = "10 10";
-        //   newColor = '#ffffff';
-        //   newWidth = 9;
+        if (wmeSpeedsHighlightOneWay && ((!attributes.fwdDirection && typeof attributes.fwdMaxSpeed == 'number') || (!attributes.revDirection && typeof attributes.revMaxSpeed == 'number'))) {
+          newDashes = "10 10";
+          newColor = '#ffffff';
+          newWidth = 10;
 
-        //   if (!attributes.fwdDirection) {
-        //     newColor = '#999999';
-        //   }
-        // }
+          if (!attributes.fwdDirection) {
+            newColor = '#999999';
+          }
+        }
 
         else if (speed1allow && speed2allow) {
           if (speed1 == 0 || speed2 == 0) {
@@ -239,7 +264,7 @@ function highlightSpeedsSegments(event) {
           newOpacity = 1;
           newWidth = 9;
         }
-      }
+      // }
 
       // if colour has changed, update the line attributes
       if (lineColor != newColor) {
@@ -275,6 +300,11 @@ function highlightSpeedsSegments(event) {
         line.setAttribute("stroke-dasharray", "none");
       }
     }
+
+    if (wmeSpeedsHardResetColors) {
+      wmeSpeedsHardResetColors = false;
+      highlightSpeedsSegments();
+    }
   }
 } // end of function
 
@@ -308,6 +338,12 @@ function makeSpeedsTab() {
     }
 
     addon.innerHTML += '<div style="background-color: ' + speedsForTab[i] + ';padding:2px 0;border-radius: 5px;color:' + colorForSpeedText[i] + ';font-size:14px;text-align:center;margin-bottom: 3px;">' + actualSpeedForTab + '</div>';
+  }
+
+  addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsInvert" title="' + fe_t('invertSpeedsTitle') + '" /> <span title="' + fe_t('invertSpeedsContent') + '">' + fe_t('invertSpeedsContent') + '</span><br>';
+
+  if (wmeSpeedsLanguage && me.rank >= 3) {
+    addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsOneWay" title="' + fe_t('oneWaySpeedsTitle') + '" /> <span title="' + fe_t('oneWaySpeedsContent') + '">' + fe_t('oneWaySpeedsContent') + '</span><br>';
   }
 
   addon.innerHTML += '<p style="font-size:11px;margin-top:5px;">' + fe_t('forumLink') + '<br>' + fe_t('author') + '<br>' + fe_t('version') + ' ' + wmeSpeedsVersion + '</p>';
@@ -429,6 +465,9 @@ function initialiseSpeedsHighlights()
   wmeSpeedsInit = true;
 
   makeSpeedsTab();
+
+  getId('_wmeSpeedsInvert').onclick = highlightSpeedsSegmentsReset;
+  getId('_wmeSpeedsOneWay').onclick = highlightSpeedsSegmentsReset;
 }
 
 /* engage! =================================================================== */
