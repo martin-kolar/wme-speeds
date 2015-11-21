@@ -21,7 +21,7 @@ var wmeSpeedsColors =     ['#ff0000',    '#321325', '#540804', '#BA1200', '#FA4A
 var wmeSpeedsTextColors = ['#000000', '#ffffff', '#ffffff', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#ffffff', '#ffffff'];
 var wmeSpeedsColorsMph =     ['#ff0000',    '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#000000'];
 var wmeSpeedsTextColorsMph = ['#000000', '#ffffff', '#ffffff', '#ffffff', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#ffffff', '#ffffff', '#ffffff'];
-var wmeSpeedsAvailableColor = ['#ff0000', '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#ff00ff', '#000', '#ffffff', '#999999'];
+var wmeSpeedsAvailableColor = ['#ff0000', '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#ff00ff', '#000', '#ffffff', '#999999', '#DC0073'];
 var wmeSpeedsMaxSpeed = 131;
 var wmeSpeedsMaxMphSpeed = 86;
 var wmeSpeedsLayer;
@@ -30,7 +30,7 @@ var wmeSpeedsHardResetColors = false;
 var wmeSpeedsNonDrivableSegments = [5, 10, 16, 18, 19, 20, 17, 15];
 var wmeSpeedsMiles = false;
 var wmeSpeedsKmphToMphRatio = 0.621371192;
-var wmeSpeedsInvertSpeedsColors, wmeSpeedsHighlightOneWay;
+var wmeSpeedsInvertSpeedsColors, wmeSpeedsHighlightOneWay, wmeSpeedsNonDrivableSpeedsColors;
 
 //  language settings
 var wmeSpeedsAllowLanguage = ['cs', 'en'];
@@ -49,7 +49,7 @@ wmeSpeedsTranslation['cs'] = {
   'oneWaySpeedsTitle': 'Jednosměrky s rychlostmi',
   'oneWaySpeedsContent': 'Zvýrazní jednosměrky se špatně nastavenou rychlostí (bílá a šedá čárkovaná)',
   'noSpeedsSegmentsTitle': 'Segmenty s rychlostí bez rychlosti',
-  'noSpeedsSegmentsContent': 'Zvýrazní nesjízdné segmenty s rychlostmi (fialová)',
+  'noSpeedsSegmentsContent': 'Zvýrazní nesjízdné segmenty s rychlostmi (růžová)',
 }
 
 //  cs translation
@@ -64,7 +64,7 @@ wmeSpeedsTranslation['en'] = {
   'oneWaySpeedsTitle': 'One-way Speeds',
   'oneWaySpeedsContent': 'Highlight one-way speeds with two speeds (white and gray dashed)',
   'noSpeedsSegmentsTitle': 'Non-drivable segments with speeds',
-  'noSpeedsSegmentsContent': 'Highlight non-drivable segments with speeds (purple)',
+  'noSpeedsSegmentsContent': 'Highlight non-drivable segments with speeds (pink)',
 }
 
 /* =========================================================================== */
@@ -75,6 +75,7 @@ function highlightSpeedsSegmentsReset(event) {
 
 function highlightSpeedsSegments(event) {
   wmeSpeedsInvertSpeedsColors = getId('_wmeSpeedsInvert').checked;
+  wmeSpeedsNonDrivableSpeedsColors = getId('_wmeSpeedsDrivable').checked;
 
   if (wmeSpeedsLanguage && me.rank >= 3) {
     wmeSpeedsHighlightOneWay = getId('_wmeSpeedsOneWay').checked;
@@ -105,16 +106,23 @@ function highlightSpeedsSegments(event) {
       // turn off highlights when roads are no longer visible
       var roadType = attributes.roadType;
 
-      if (Waze.map.zoom <= 3 && (roadType < 2 || roadType > 7 || roadType == 5)) {
-        if (opacity > 0.1) {
-          line.setAttribute("stroke","#dd7700");
-          line.setAttribute("stroke-opacity",0.001);
-          line.setAttribute("stroke-dasharray", "none");
-        }
-        continue;
-      }
+      // if (Waze.map.zoom <= 3 && (roadType < 2 || roadType > 7 || roadType == 5)) {
+      //   if (opacity > 0.1) {
+      //     line.setAttribute("stroke","#dd7700");
+      //     line.setAttribute("stroke-opacity",0.001);
+      //     line.setAttribute("stroke-dasharray", "none");
+      //   }
+      //   continue;
+      // }
 
       if (wmeSpeedsNonDrivableSegments.indexOf(roadType) != -1) {
+        if (wmeSpeedsNonDrivableSpeedsColors && (typeof attributes.fwdMaxSpeed == 'number' || typeof attributes.revMaxSpeed == 'number')) {
+          line.setAttribute("stroke", '#DC0073');
+          line.setAttribute("stroke-opacity", 1);
+          line.setAttribute("stroke-dasharray", "none");
+          line.setAttribute("stroke-width", 10);
+        }
+
         continue;
       }
 
@@ -298,7 +306,7 @@ function highlightSpeedsSegments(event) {
     for (var seg in Waze.model.segments.objects) {
       var segment = Waze.model.segments.get(seg);
       var line = getId(segment.geometry.id);
-
+console.log(segment, line);
       if (line === null) {
         continue;
       }
@@ -359,6 +367,8 @@ function makeSpeedsTab() {
   if (wmeSpeedsLanguage && me.rank >= 3) {
     addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsOneWay" title="' + fe_t('oneWaySpeedsTitle') + '" /> <span title="' + fe_t('oneWaySpeedsContent') + '">' + fe_t('oneWaySpeedsContent') + '</span><br>';
   }
+
+  addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsDrivable" title="' + fe_t('noSpeedsSegmentsTitle') + '" /> <span title="' + fe_t('noSpeedsSegmentsContent') + '">' + fe_t('noSpeedsSegmentsContent') + '</span><br>';
 
   addon.innerHTML += '<p style="font-size:11px;margin-top:5px;">' + fe_t('forumLink') + '<br>' + fe_t('author') + '<br>' + fe_t('version') + ' ' + wmeSpeedsVersion + '</p>';
 
@@ -482,6 +492,7 @@ function initialiseSpeedsHighlights()
 
   getId('_wmeSpeedsInvert').onclick = highlightSpeedsSegmentsReset;
   getId('_wmeSpeedsOneWay').onclick = highlightSpeedsSegmentsReset;
+  getId('_wmeSpeedsDrivable').onclick = highlightSpeedsSegmentsReset;
 }
 
 /* engage! =================================================================== */
