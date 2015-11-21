@@ -17,8 +17,10 @@
 
 var wmeSpeedsVersion = "0.1.6";
 var wmeSpeedsInit = false;
-var wmeSpeedsColors = ['#f00', '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
-var wmeSpeedsColorsMph = ['#f00', '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#000000'];
+var wmeSpeedsColors =     ['#f00',    '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
+var wmeSpeedsTextColors = ['#000000', '#ffffff', '#ffffff', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#ffffff', '#ffffff'];
+var wmeSpeedsColorsMph =     ['#f00',    '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#000000'];
+var wmeSpeedsTextColorsMph = ['#000000', '#ffffff', '#ffffff', '#ffffff', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#ffffff', '#ffffff', '#ffffff'];
 var wmeSpeedsAvailableColor = ['#f00', '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#ff00ff', '#000', '#ffffff', '#999999'];
 var wmeSpeedsMaxSpeed = 131;
 var wmeSpeedsMaxMphSpeed = 86;
@@ -28,6 +30,28 @@ var wmeSpeedsNonDrivableSegments = [5, 10, 16, 18, 19, 20, 17, 15];
 var wmeSpeedsMiles = false;
 var wmeSpeedsKmphToMphRatio = 0.621371192;
 
+//  language settings
+var wmeSpeedsAllowLanguage = ['cs', 'en'];
+var wmeSpeedsLanguage = 'en';  //  default language
+var wmeSpeedsTranslation = [];
+
+//  cs translation
+wmeSpeedsTranslation['cs'] = {
+  'tabName': 'Rychlosti',
+  'speedsHeadline': 'Barvy segmentů dle rychlostí',
+  'forumLink': '<a href="https://www.waze.com/forum/viewtopic.php?f=22&t=166406" target="_blank">České fórum</a>',
+  'author': 'Autor: martinkolar (4)',
+  'version': 'Verze:',
+}
+
+//  cs translation
+wmeSpeedsTranslation['en'] = {
+  'tabName': 'Speeds',
+  'speedsHeadline': 'Colors by speed',
+  'forumLink': '<a href="https://www.waze.com/forum/viewtopic.php?f=819&t=166497" target="_blank">English discussion</a>',
+  'author': 'Author: martinkolar (CZ)',
+  'version': 'Version:',
+}
 
 /* =========================================================================== */
 function highlightSpeedsSegments(event) {
@@ -254,6 +278,53 @@ function highlightSpeedsSegments(event) {
   }
 } // end of function
 
+function makeSpeedsTab() {
+  var addon = document.createElement('section');
+
+  addon.innerHTML += '<h3 style="margin-bottom: 5px;">' + fe_t('speedsHeadline') + '</h3>';
+
+  if (wmeSpeedsMiles) {
+    speedsForTab = wmeSpeedsColorsMph;
+    colorForSpeedText = wmeSpeedsTextColorsMph;
+  }
+  else {
+    speedsForTab = wmeSpeedsColors;
+    colorForSpeedText = wmeSpeedsTextColors;
+  }
+  for (i = 0; i < speedsForTab.length; i++) {
+    if ((i+1) == speedsForTab.length) {
+      if (wmeSpeedsMiles) {
+        actualSpeedForTab = ' &gt; ' + wmeSpeedsMaxMphSpeed + 'mph';
+      }
+      else {
+        actualSpeedForTab = ' &gt; ' + wmeSpeedsMaxSpeed + 'km/h';
+      }
+    }
+    else if (wmeSpeedsMiles) {
+      actualSpeedForTab = (i * 5) + 'mph';
+    }
+    else {
+      actualSpeedForTab = (i * 10) + 'km/h';
+    }
+
+    addon.innerHTML += '<div style="background-color: ' + speedsForTab[i] + ';padding:2px 0;border-radius: 5px;color:' + colorForSpeedText[i] + ';font-size:14px;text-align:center;margin-bottom: 3px;">' + actualSpeedForTab + '</div>';
+  }
+
+  addon.innerHTML += '<p style="font-size:11px;margin-top:5px;">' + fe_t('forumLink') + '<br>' + fe_t('author') + '<br>' + fe_t('version') + ' ' + wmeSpeedsVersion + '</p>';
+
+  var userTabs = getId('user-info');
+  var navTabs = getElementsByClassName('nav-tabs', userTabs)[0];
+  var tabContent = getElementsByClassName('tab-content', userTabs)[0];
+
+  newtab = document.createElement('li');
+  newtab.innerHTML = '<a href="#sidepanel-wme-speeds" data-toggle="tab">' + fe_t('tabName') + '</a>';
+  navTabs.appendChild(newtab);
+
+  addon.id = "sidepanel-wme-speeds";
+  addon.className = "tab-pane";
+  tabContent.appendChild(addon);
+}
+
 /* helper function */
 function getElementsByClassName(classname, node) {
   if(!node) node = document.getElementsByTagName("body")[0];
@@ -275,6 +346,23 @@ function changeLayer() {
 
 function kmphToMph(kmph) {
   return Math.round(kmph * wmeSpeedsKmphToMphRatio);
+}
+
+function fe_t(name, params) { //  function for translation
+  if (typeof params === 'object') {
+    returnString = wmeSpeedsTranslation[wmeSpeedsLanguage][name];
+
+    for (var i in params) {
+      do {
+        returnString = returnString.replace('{' + i + '}', params[i]);
+      } while (returnString.indexOf('{' + i + '}') !== -1);
+    }
+
+    return returnString;
+  }
+  else {
+    return wmeSpeedsTranslation[wmeSpeedsLanguage][name];
+  }
 }
 
 /* =========================================================================== */
@@ -330,11 +418,17 @@ function initialiseSpeedsHighlights()
     wmeSpeedsMiles = true;
   }
 
+  if (wmeSpeedsAllowLanguage.indexOf(unsafeWindow.I18n.locale) != -1) {
+    wmeSpeedsLanguage = unsafeWindow.I18n.locale;
+  }
+
   // register some events...
   Waze.map.events.register("zoomend", null, highlightSpeedsSegments);
   Waze.map.events.register("changelayer", null, changeLayer);
 
   wmeSpeedsInit = true;
+
+  makeSpeedsTab();
 }
 
 /* engage! =================================================================== */
