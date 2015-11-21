@@ -17,11 +17,11 @@
 
 var wmeSpeedsVersion = "0.1.6";
 var wmeSpeedsInit = false;
-var wmeSpeedsColors =     ['#f00',    '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
+var wmeSpeedsColors =     ['#ff0000',    '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
 var wmeSpeedsTextColors = ['#000000', '#ffffff', '#ffffff', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#ffffff', '#ffffff'];
-var wmeSpeedsColorsMph =     ['#f00',    '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#000000'];
+var wmeSpeedsColorsMph =     ['#ff0000',    '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#000000'];
 var wmeSpeedsTextColorsMph = ['#000000', '#ffffff', '#ffffff', '#ffffff', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#ffffff', '#ffffff', '#ffffff'];
-var wmeSpeedsAvailableColor = ['#f00', '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#ff00ff', '#000', '#ffffff', '#999999'];
+var wmeSpeedsAvailableColor = ['#ff0000', '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#ff00ff', '#000', '#ffffff', '#999999'];
 var wmeSpeedsMaxSpeed = 131;
 var wmeSpeedsMaxMphSpeed = 86;
 var wmeSpeedsLayer;
@@ -45,9 +45,11 @@ wmeSpeedsTranslation['cs'] = {
   'author': 'Autor: martinkolar (4)',
   'version': 'Verze:',
   'invertSpeedsTitle': 'Invertovat barvy rychlostí',
-  'invertSpeedsContent': 'Zvýrazní pouze segmenty bez rychlosti',
+  'invertSpeedsContent': 'Zvýrazní pouze segmenty bez rychlosti (červená)',
   'oneWaySpeedsTitle': 'Jednosměrky s rychlostmi',
-  'oneWaySpeedsContent': 'Zvýrazní jednosměrky se špatně nastavenou rychlostí',
+  'oneWaySpeedsContent': 'Zvýrazní jednosměrky se špatně nastavenou rychlostí (bílá a šedá čárkovaná)',
+  'noSpeedsSegmentsTitle': 'Segmenty s rychlostí bez rychlosti',
+  'noSpeedsSegmentsContent': 'Zvýrazní nesjízdné segmenty s rychlostmi (fialová)',
 }
 
 //  cs translation
@@ -58,9 +60,11 @@ wmeSpeedsTranslation['en'] = {
   'author': 'Author: martinkolar (CZ)',
   'version': 'Version:',
   'invertSpeedsTitle': 'Invert Speeds',
-  'invertSpeedsContent': 'Highlight segments without speeds',
+  'invertSpeedsContent': 'Highlight segments without speeds (red)',
   'oneWaySpeedsTitle': 'One-way Speeds',
-  'oneWaySpeedsContent': 'Highlight one-way speeds with two speeds',
+  'oneWaySpeedsContent': 'Highlight one-way speeds with two speeds (white and gray dashed)',
+  'noSpeedsSegmentsTitle': 'Non-drivable segments with speeds',
+  'noSpeedsSegmentsContent': 'Highlight non-drivable segments with speeds (purple)',
 }
 
 /* =========================================================================== */
@@ -123,99 +127,107 @@ function highlightSpeedsSegments(event) {
       var newDashes = "none";
       var newWidth = 8;
 
-      // if (roadType != 5 && roadType != 10) {
-        newColor = "#fff";
+      newColor = "#fff";
+      newOpacity = 1;
+      newWidth = 8;
+
+      speed1allow = attributes.fwdDirection;
+      speed2allow = attributes.revDirection;
+
+      if (!speed1allow && !speed2allow) {
+        continue;
+      }
+
+      if (speed1allow && typeof attributes.fwdMaxSpeed == 'number') {
+        if (wmeSpeedsMiles) {
+          speed1Full = kmphToMph(attributes.fwdMaxSpeed);
+        }
+        else {
+          speed1Full = attributes.fwdMaxSpeed;
+        }
+
+        if (wmeSpeedsMiles && speed1Full >= wmeSpeedsMaxMphSpeed) {
+          speed1 = Math.ceil(wmeSpeedsMaxMphSpeed / 5);
+        }
+        else if (!wmeSpeedsMiles && speed1Full >= wmeSpeedsMaxSpeed) {
+          speed1 = Math.ceil(wmeSpeedsMaxSpeed / 10);
+        }
+        else {
+          if (wmeSpeedsMiles) {
+            speed1 = Math.ceil(speed1Full / 5);
+          }
+          else {
+            speed1 = Math.ceil(speed1Full / 10);
+          }
+
+          if (wmeSpeedsMiles && speed1Full % 5 != 0) {
+            newDashes = "30 30";
+          }
+          else if (!wmeSpeedsMiles && speed1Full % 10 != 0) {
+            newDashes = "30 30";
+          }
+        }
+      }
+      else {
+        speed1 = 0;
+      }
+
+      if (speed2allow && typeof attributes.revMaxSpeed == 'number') {
+        if (wmeSpeedsMiles) {
+          speed2Full = kmphToMph(attributes.revMaxSpeed);
+        }
+        else {
+          speed2Full = attributes.revMaxSpeed;
+        }
+
+        if (wmeSpeedsMiles && speed2Full >= wmeSpeedsMaxMphSpeed) {
+          speed2 = Math.ceil(wmeSpeedsMaxMphSpeed / 5);
+        }
+        else if (!wmeSpeedsMiles && speed2Full >= wmeSpeedsMaxSpeed) {
+          speed2 = Math.ceil(wmeSpeedsMaxSpeed / 10);
+        }
+        else {
+          if (wmeSpeedsMiles) {
+            speed2 = Math.ceil(speed2Full / 5);
+          }
+          else {
+            speed2 = Math.ceil(speed2Full / 10);
+          }
+
+          if (wmeSpeedsMiles && speed2Full % 5 != 0) {
+            newDashes = "30 30";
+          }
+          else if (!wmeSpeedsMiles && speed2Full % 10 != 0) {
+            newDashes = "30 30";
+          }
+        }
+      }
+      else {
+        speed2 = 0;
+      }
+
+      if (wmeSpeedsMiles) {
+        speed1color = wmeSpeedsColorsMph[speed1];
+        speed2color = wmeSpeedsColorsMph[speed2];
+      }
+      else {
+        speed1color = wmeSpeedsColors[speed1];
+        speed2color = wmeSpeedsColors[speed2];
+      }
+
+      if (!wmeSpeedsInvertSpeedsColors && ((speed1 == 0  && speed2 == 0) || (!speed2allow && speed1 == 0) || (!speed1allow && speed2 == 0))) {
+        continue;
+      }
+
+      if (wmeSpeedsInvertSpeedsColors && ((speed1 == 0  && speed2 == 0) || (!speed2allow && speed1 == 0) || (!speed1allow && speed2 == 0))) {
+        newColor = "#ff0000";
         newOpacity = 1;
         newWidth = 8;
-
-        speed1allow = attributes.fwdDirection;
-        speed2allow = attributes.revDirection;
-
-        if (!speed1allow && !speed2allow) {
-          continue;
-        }
-
-        if (speed1allow && typeof attributes.fwdMaxSpeed == 'number') {
-          if (wmeSpeedsMiles) {
-            speed1Full = kmphToMph(attributes.fwdMaxSpeed);
-          }
-          else {
-            speed1Full = attributes.fwdMaxSpeed;
-          }
-
-          if (wmeSpeedsMiles && speed1Full >= wmeSpeedsMaxMphSpeed) {
-            speed1 = Math.ceil(wmeSpeedsMaxMphSpeed / 5);
-          }
-          else if (!wmeSpeedsMiles && speed1Full >= wmeSpeedsMaxSpeed) {
-            speed1 = Math.ceil(wmeSpeedsMaxSpeed / 10);
-          }
-          else {
-            if (wmeSpeedsMiles) {
-              speed1 = Math.ceil(speed1Full / 5);
-            }
-            else {
-              speed1 = Math.ceil(speed1Full / 10);
-            }
-
-            if (wmeSpeedsMiles && speed1Full % 5 != 0) {
-              newDashes = "30 30";
-            }
-            else if (!wmeSpeedsMiles && speed1Full % 10 != 0) {
-              newDashes = "30 30";
-            }
-          }
-        }
-        else {
-          speed1 = 0;
-        }
-
-        if (speed2allow && typeof attributes.revMaxSpeed == 'number') {
-          if (wmeSpeedsMiles) {
-            speed2Full = kmphToMph(attributes.revMaxSpeed);
-          }
-          else {
-            speed2Full = attributes.revMaxSpeed;
-          }
-
-          if (wmeSpeedsMiles && speed2Full >= wmeSpeedsMaxMphSpeed) {
-            speed2 = Math.ceil(wmeSpeedsMaxMphSpeed / 5);
-          }
-          else if (!wmeSpeedsMiles && speed2Full >= wmeSpeedsMaxSpeed) {
-            speed2 = Math.ceil(wmeSpeedsMaxSpeed / 10);
-          }
-          else {
-            if (wmeSpeedsMiles) {
-              speed2 = Math.ceil(speed2Full / 5);
-            }
-            else {
-              speed2 = Math.ceil(speed2Full / 10);
-            }
-
-            if (wmeSpeedsMiles && speed2Full % 5 != 0) {
-              newDashes = "30 30";
-            }
-            else if (!wmeSpeedsMiles && speed2Full % 10 != 0) {
-              newDashes = "30 30";
-            }
-          }
-        }
-        else {
-          speed2 = 0;
-        }
-
-        if (wmeSpeedsMiles) {
-          speed1color = wmeSpeedsColorsMph[speed1];
-          speed2color = wmeSpeedsColorsMph[speed2];
-        }
-        else {
-          speed1color = wmeSpeedsColors[speed1];
-          speed2color = wmeSpeedsColors[speed2];
-        }
-
-        if ((speed1 == 0  && speed2 == 0) || (!speed2allow && speed1 == 0) || (!speed1allow && speed2 == 0)) {
-          continue;
-        }
-
+      }
+      else if (wmeSpeedsInvertSpeedsColors) {
+        continue;
+      }
+      else {
         if (wmeSpeedsHighlightOneWay && ((!attributes.fwdDirection && typeof attributes.fwdMaxSpeed == 'number') || (!attributes.revDirection && typeof attributes.revMaxSpeed == 'number'))) {
           newDashes = "10 10";
           newColor = '#ffffff';
@@ -230,7 +242,7 @@ function highlightSpeedsSegments(event) {
           if (speed1 == 0 || speed2 == 0) {
             newDashes = "10 10";
             newColor = '#ff00ff';
-            newWidth = 9;
+            newWidth = 8;
           }
           else if (speed1Full != speed2Full) {
             if (speed1 < speed2) {
@@ -258,19 +270,20 @@ function highlightSpeedsSegments(event) {
         else {
           newColor = speed2color;
         }
+      }
 
-        if ((attributes.fwdDirection && attributes.fwdMaxSpeed == 126) || (attributes.revDirection && attributes.revMaxSpeed == 126)) {
-          newColor = "#000";
-          newOpacity = 1;
-          newWidth = 9;
-        }
-      // }
+      if ((attributes.fwdDirection && attributes.fwdMaxSpeed == 126) || (attributes.revDirection && attributes.revMaxSpeed == 126)) {
+        newColor = "#000";
+        newOpacity = 1;
+        newWidth = 8;
+      }
 
       // if colour has changed, update the line attributes
       if (lineColor != newColor) {
         line.setAttribute("stroke", newColor);
         line.setAttribute("stroke-opacity", newOpacity);
         line.setAttribute("stroke-dasharray", newDashes);
+
         if (newColor != "#dd7700") { //default
           line.setAttribute("stroke-width", newWidth);
         } else {
@@ -321,7 +334,8 @@ function makeSpeedsTab() {
     speedsForTab = wmeSpeedsColors;
     colorForSpeedText = wmeSpeedsTextColors;
   }
-  for (i = 0; i < speedsForTab.length; i++) {
+
+  for (i = 1; i < speedsForTab.length; i++) {
     if ((i+1) == speedsForTab.length) {
       if (wmeSpeedsMiles) {
         actualSpeedForTab = ' &gt; ' + wmeSpeedsMaxMphSpeed + 'mph';
