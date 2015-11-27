@@ -510,8 +510,7 @@ function fe_t(name, params) { //  function for translation
 }
 
 /* =========================================================================== */
-function initialiseSpeedsHighlights()
-{
+function initialiseSpeedsHighlights() {
   if (wmeSpeedsInit) {
     return;
   }
@@ -552,9 +551,9 @@ function initialiseSpeedsHighlights()
   }
 
   wmeSpeedsLayer = new unsafeWindow.OpenLayers.Layer.Vector("Speeds", {
-      displayInLayerSwitcher: true,
-      uniqueName: "__DrawSegmentSpeeds"
-    });
+    displayInLayerSwitcher: true,
+    uniqueName: "__DrawSegmentSpeeds"
+  });
 
   I18n.translations.en.layers.name["__DrawSegmentSpeeds"] = "WME Speeds";
   unsafeWindow.Waze.map.addLayer(wmeSpeedsLayer);
@@ -590,6 +589,39 @@ function initialiseSpeedsHighlights()
 
   makeSpeedsTab();
 
+  // restore saved settings
+  if (localStorage.WMESpeedsScript) {
+    console.log("WME Speeds: Loading Options");
+    options = JSON.parse(localStorage.WMESpeedsScript);
+
+    getId('_wmeSpeedsInvert').checked = options[1];
+    getId('_wmeSpeedsOneWay').checked = options[2];
+    getId('_wmeSpeedsDrivable').checked = options[3];
+    getId('_wmeSpeedsTransparentColors').checked = options[4];
+  }
+
+  // overload the WME exit function
+  saveWmeSpeedsOptions = function() {
+    if (localStorage) {
+      console.log("WME Speeds: Saving Options");
+      var options = [];
+
+      // preserve previous options which may get lost after logout
+      if (localStorage.WMESpeedsScript) {
+        options = JSON.parse(localStorage.WMESpeedsScript);
+      }
+
+      options[1] = getId('_wmeSpeedsInvert').checked;
+      options[2] = getId('_wmeSpeedsOneWay').checked;
+      options[3] = getId('_wmeSpeedsDrivable').checked;
+      options[4] = getId('_wmeSpeedsTransparentColors').checked;
+
+      localStorage.WMESpeedsScript = JSON.stringify(options);
+    }
+  }
+  //  save options
+  window.addEventListener("beforeunload", saveWmeSpeedsOptions, false);
+
   getId('_wmeSpeedsInvert').onclick = highlightSpeedsSegmentsReset;
   getId('_wmeSpeedsOneWay').onclick = highlightSpeedsSegmentsReset;
   getId('_wmeSpeedsDrivable').onclick = highlightSpeedsSegmentsReset;
@@ -604,8 +636,6 @@ function initialiseSpeedsHighlights()
     wmeSpeedsColorsMphTransparent[i] = 'rgba(' + hexToRgb(wmeSpeedsColorsMph[i]).r + ', ' + hexToRgb(wmeSpeedsColorsMph[i]).g + ', ' + hexToRgb(wmeSpeedsColorsMph[i]).b + ', 0.4)';
     wmeSpeedsAvailableColor[wmeSpeedsAvailableColor.length] = wmeSpeedsColorsMphTransparent[i];
   }
-
-  console.log(wmeSpeedsColors, wmeSpeedsColorsTransparent, wmeSpeedsAvailableColor, wmeSpeedsColorsMph, wmeSpeedsColorsMphTransparent, wmeSpeedsAvailableColor);
 }
 
 /* engage! =================================================================== */
