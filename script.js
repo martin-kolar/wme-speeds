@@ -34,7 +34,7 @@ var wmeSpeedsInvertSpeedsColors, wmeSpeedsHighlightOneWay, wmeSpeedsNonDrivableS
 var wmeSpeedsChatAddonCounter = 0;
 
 //  language settings
-var wmeSpeedsAllowLanguage = ['cs', 'en'];
+var wmeSpeedsAllowLanguage = ['cs', 'en', 'sk'];
 var wmeSpeedsLanguage = 'en';  //  default language
 var wmeSpeedsTranslation = [];
 
@@ -49,11 +49,26 @@ wmeSpeedsTranslation['cs'] = {
   'invertSpeedsContent': 'Zvýrazní pouze segmenty bez rychlosti (červená)',
   'oneWaySpeedsTitle': 'Jednosměrky s rychlostmi',
   'oneWaySpeedsContent': 'Zvýrazní jednosměrky se špatně nastavenou rychlostí (bílá a šedá čárkovaná)',
-  'noSpeedsSegmentsTitle': 'Segmenty s rychlostí bez rychlosti',
+  'noSpeedsSegmentsTitle': 'Nesjízdné segmenty s rychlostí',
   'noSpeedsSegmentsContent': 'Zvýrazní nesjízdné segmenty s rychlostmi (růžová)',
 }
 
-//  cs translation
+//  sk translation
+wmeSpeedsTranslation['sk'] = {
+  'tabName': 'Rýchlosti',
+  'speedsHeadline': 'Farby segmentov podľa rýchlostí',
+  'forumLink': '<a href="https://www.waze.com/forum/viewtopic.php?f=22&t=166406" target="_blank">České fórum</a>',
+  'author': 'Autor: martinkolar (4)',
+  'version': 'Verzia:',
+  'invertSpeedsTitle': 'Invertovať farby rýchlostí',
+  'invertSpeedsContent': 'Zvýrazní iba segmenty bez rýchlosti (červená)',
+  'oneWaySpeedsTitle': 'Jednosmerky s rýchlosťami',
+  'oneWaySpeedsContent': 'Zvýrazní jednosmerky s rýchlosťou nastavenou pre protismer (biela a šedá čiarkovaná)',
+  'noSpeedsSegmentsTitle': 'Nezjazdné segmenty s rýchlosťou',
+  'noSpeedsSegmentsContent': 'Zvýrazní nezjazdné segmenty s rýchlosťami (ružová)',
+}
+
+//  en translation
 wmeSpeedsTranslation['en'] = {
   'tabName': 'Speeds',
   'speedsHeadline': 'Colors by speed',
