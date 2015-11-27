@@ -18,8 +18,10 @@
 var wmeSpeedsVersion = "0.2.2";
 var wmeSpeedsInit = false;
 var wmeSpeedsColors =     ['#ff0000',    '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
+var wmeSpeedsColorsTransparent = [];
 var wmeSpeedsTextColors = ['#000000', '#ffffff', '#ffffff', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#ffffff', '#ffffff'];
 var wmeSpeedsColorsMph =     ['#ff0000',    '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#000000'];
+var wmeSpeedsColorsMphTransparent = [];
 var wmeSpeedsTextColorsMph = ['#000000', '#ffffff', '#ffffff', '#ffffff', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#ffffff', '#ffffff', '#ffffff'];
 var wmeSpeedsAvailableColor = ['#ff0000', '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#ff00ff', '#000', '#ffffff', '#999999', '#DC0073'];
 var wmeSpeedsMaxSpeed = 131;
@@ -51,6 +53,8 @@ wmeSpeedsTranslation['cs'] = {
   'oneWaySpeedsContent': 'Zvýrazní jednosměrky se špatně nastavenou rychlostí (bílá a šedá čárkovaná)',
   'noSpeedsSegmentsTitle': 'Nesjízdné segmenty s rychlostí',
   'noSpeedsSegmentsContent': 'Zvýrazní nesjízdné segmenty s rychlostmi (růžová)',
+  'transparentColorsTitle': 'Průhledné barvy',
+  'transparentColorsContent': 'Zprůhlednit barvy rychlostí',
 }
 
 //  sk translation
@@ -66,6 +70,8 @@ wmeSpeedsTranslation['sk'] = {
   'oneWaySpeedsContent': 'Zvýrazní jednosmerky s rýchlosťou nastavenou pre protismer (biela a šedá čiarkovaná)',
   'noSpeedsSegmentsTitle': 'Nezjazdné segmenty s rýchlosťou',
   'noSpeedsSegmentsContent': 'Zvýrazní nezjazdné segmenty s rýchlosťami (ružová)',
+  'transparentColorsTitle': 'Průhledné barvy',
+  'transparentColorsContent': 'Zprůhlednit barvy rychlostí',
 }
 
 //  en translation
@@ -81,6 +87,8 @@ wmeSpeedsTranslation['en'] = {
   'oneWaySpeedsContent': 'Highlight one-way speeds with two speeds (white and gray dashed)',
   'noSpeedsSegmentsTitle': 'Non-drivable segments with speeds',
   'noSpeedsSegmentsContent': 'Highlight non-drivable segments with speeds (pink)',
+  'transparentColorsTitle': 'Transparent color',
+  'transparentColorsContent': 'Make speeds colors transparent',
 }
 
 /* =========================================================================== */
@@ -92,6 +100,7 @@ function highlightSpeedsSegmentsReset(event) {
 function highlightSpeedsSegments(event) {
   wmeSpeedsInvertSpeedsColors = getId('_wmeSpeedsInvert').checked;
   wmeSpeedsNonDrivableSpeedsColors = getId('_wmeSpeedsDrivable').checked;
+  wmeSpeedsTransparentColors = getId('_wmeSpeedsTransparentColors').checked;
 
   if (wmeSpeedsLanguage && me.rank >= 3) {
     wmeSpeedsHighlightOneWay = getId('_wmeSpeedsOneWay').checked;
@@ -231,12 +240,24 @@ function highlightSpeedsSegments(event) {
       }
 
       if (wmeSpeedsMiles) {
-        speed1color = wmeSpeedsColorsMph[speed1];
-        speed2color = wmeSpeedsColorsMph[speed2];
+        if (wmeSpeedsTransparentColors) {
+          speed1color = wmeSpeedsColorsMphTransparent[speed1];
+          speed2color = wmeSpeedsColorsMphTransparent[speed2];
+        }
+        else {
+          speed1color = wmeSpeedsColorsMph[speed1];
+          speed2color = wmeSpeedsColorsMph[speed2];
+        }
       }
       else {
-        speed1color = wmeSpeedsColors[speed1];
-        speed2color = wmeSpeedsColors[speed2];
+        if (wmeSpeedsTransparentColors) {
+          speed1color = wmeSpeedsColorsTransparent[speed1];
+          speed2color = wmeSpeedsColorsTransparent[speed2];
+        }
+        else {
+          speed1color = wmeSpeedsColors[speed1];
+          speed2color = wmeSpeedsColors[speed2];
+        }
       }
 
       if (!wmeSpeedsInvertSpeedsColors && ((speed1 == 0  && speed2 == 0) || (!speed2allow && speed1 == 0) || (!speed1allow && speed2 == 0))) {
@@ -244,7 +265,13 @@ function highlightSpeedsSegments(event) {
       }
 
       if (wmeSpeedsInvertSpeedsColors && ((speed1 == 0  && speed2 == 0) || (!speed2allow && speed1 == 0) || (!speed1allow && speed2 == 0))) {
-        newColor = "#ff0000";
+        if (wmeSpeedsTransparentColors) {
+          newColor = "rgba(255,0,0,0.4)";
+        }
+        else {
+          newColor = "#ff0000";
+        }
+
         newOpacity = 1;
         newWidth = 8;
       }
@@ -253,19 +280,37 @@ function highlightSpeedsSegments(event) {
       }
       else {
         if (wmeSpeedsHighlightOneWay && ((!attributes.fwdDirection && typeof attributes.fwdMaxSpeed == 'number') || (!attributes.revDirection && typeof attributes.revMaxSpeed == 'number'))) {
+          if (wmeSpeedsTransparentColors) {
+            newColor = "rgba(255,255,255,0.4)";
+          }
+          else {
+            newColor = "#ffffff";
+          }
+
           newDashes = "10 10";
-          newColor = '#ffffff';
+          newColor = '#';
           newWidth = 10;
 
           if (!attributes.fwdDirection) {
-            newColor = '#999999';
+            if (wmeSpeedsTransparentColors) {
+              newColor = "rgba(153,153,153,0.4)";
+            }
+            else {
+              newColor = "#999999";
+            }
           }
         }
 
         else if (speed1allow && speed2allow) {
           if (speed1 == 0 || speed2 == 0) {
+            if (wmeSpeedsTransparentColors) {
+              newColor = "rgba(255,0,255,0.4)";
+            }
+            else {
+              newColor = "#ff00ff";
+            }
+
             newDashes = "10 10";
-            newColor = '#ff00ff';
             newWidth = 8;
           }
           else if (speed1Full != speed2Full) {
@@ -297,7 +342,13 @@ function highlightSpeedsSegments(event) {
       }
 
       if ((attributes.fwdDirection && attributes.fwdMaxSpeed == 126) || (attributes.revDirection && attributes.revMaxSpeed == 126)) {
-        newColor = "#000";
+        if (wmeSpeedsTransparentColors) {
+          newColor = "rgba(255,0,255,0.4)";
+        }
+        else {
+          newColor = "#ff00ff";
+        }
+
         newOpacity = 1;
         newWidth = 8;
       }
@@ -386,6 +437,8 @@ function makeSpeedsTab() {
 
   addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsDrivable" title="' + fe_t('noSpeedsSegmentsTitle') + '" /> <span title="' + fe_t('noSpeedsSegmentsContent') + '">' + fe_t('noSpeedsSegmentsContent') + '</span><br>';
 
+  addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsTransparentColors" title="' + fe_t('transparentColorsTitle') + '" /> <span title="' + fe_t('transparentColorsContent') + '">' + fe_t('transparentColorsContent') + '</span><br>';
+
   addon.innerHTML += '<p style="font-size:11px;margin-top:5px;">' + fe_t('forumLink') + '<br>' + fe_t('author') + '<br>' + fe_t('version') + ' ' + wmeSpeedsVersion + '</p>';
 
   var userTabs = getId('user-info');
@@ -418,6 +471,21 @@ function getId(node) {
 
 function changeLayer() {
   localStorage.DrawSegmentSpeeds = wmeSpeedsLayer.getVisibility();
+}
+
+function hexToRgb(hex) {  //  http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+  // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+  var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+  hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+    return r + r + g + g + b + b;
+  });
+
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
 }
 
 function kmphToMph(kmph) {
@@ -525,6 +593,19 @@ function initialiseSpeedsHighlights()
   getId('_wmeSpeedsInvert').onclick = highlightSpeedsSegmentsReset;
   getId('_wmeSpeedsOneWay').onclick = highlightSpeedsSegmentsReset;
   getId('_wmeSpeedsDrivable').onclick = highlightSpeedsSegmentsReset;
+  getId('_wmeSpeedsTransparentColors').onclick = highlightSpeedsSegmentsReset;
+
+  for (i = 0; i < wmeSpeedsColors.length; i++) {
+    wmeSpeedsColorsTransparent[i] = 'rgba(' + hexToRgb(wmeSpeedsColors[i]).r + ', ' + hexToRgb(wmeSpeedsColors[i]).g + ', ' + hexToRgb(wmeSpeedsColors[i]).b + ', 0.4)';
+    wmeSpeedsAvailableColor[wmeSpeedsAvailableColor.length] = wmeSpeedsColorsTransparent[i];
+  }
+
+  for (i = 0; i < wmeSpeedsColorsMph.length; i++) {
+    wmeSpeedsColorsMphTransparent[i] = 'rgba(' + hexToRgb(wmeSpeedsColorsMph[i]).r + ', ' + hexToRgb(wmeSpeedsColorsMph[i]).g + ', ' + hexToRgb(wmeSpeedsColorsMph[i]).b + ', 0.4)';
+    wmeSpeedsAvailableColor[wmeSpeedsAvailableColor.length] = wmeSpeedsColorsMphTransparent[i];
+  }
+
+  console.log(wmeSpeedsColors, wmeSpeedsColorsTransparent, wmeSpeedsAvailableColor, wmeSpeedsColorsMph, wmeSpeedsColorsMphTransparent, wmeSpeedsAvailableColor);
 }
 
 /* engage! =================================================================== */
