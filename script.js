@@ -101,13 +101,7 @@ function highlightSpeedsSegments(event) {
   wmeSpeedsInvertSpeedsColors = getId('_wmeSpeedsInvert').checked;
   wmeSpeedsNonDrivableSpeedsColors = getId('_wmeSpeedsDrivable').checked;
   wmeSpeedsTransparentColors = getId('_wmeSpeedsTransparentColors').checked;
-
-  // if (wmeSpeedsLanguage && unsafeWindow.UserLevel > 3) {
-  //   wmeSpeedsHighlightOneWay = getId('_wmeSpeedsOneWay').checked;
-  // }
-  // else {
-    wmeSpeedsHighlightOneWay = false;
-  // }
+  wmeSpeedsHighlightOneWay = false;
 
   if (wmeSpeedsLayer.getVisibility() && !wmeSpeedsHardResetColors) {
     wmeSpeedsResetColors = true;
@@ -430,13 +424,7 @@ function makeSpeedsTab() {
   }
 
   addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsInvert" title="' + fe_t('invertSpeedsTitle') + '" /> <span title="' + fe_t('invertSpeedsContent') + '">' + fe_t('invertSpeedsContent') + '</span><br>';
-
-  // if (wmeSpeedsLanguage && unsafeWindow.UserLevel > 3) {
-  //   addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsOneWay" title="' + fe_t('oneWaySpeedsTitle') + '" /> <span title="' + fe_t('oneWaySpeedsContent') + '">' + fe_t('oneWaySpeedsContent') + '</span><br>';
-  // }
-
   addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsDrivable" title="' + fe_t('noSpeedsSegmentsTitle') + '" /> <span title="' + fe_t('noSpeedsSegmentsContent') + '">' + fe_t('noSpeedsSegmentsContent') + '</span><br>';
-
   addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsTransparentColors" title="' + fe_t('transparentColorsTitle') + '" /> <span title="' + fe_t('transparentColorsContent') + '">' + fe_t('transparentColorsContent') + '</span><br>';
 
   addon.innerHTML += '<p style="font-size:11px;margin-top:5px;">' + fe_t('forumLink') + '<br>' + fe_t('author') + '<br>' + fe_t('version') + ' ' + wmeSpeedsVersion + '</p>';
@@ -534,22 +522,6 @@ function initialiseSpeedsHighlights() {
     return;
   }
 
-  // if (typeof(me) === 'undefined') {
-  //   if (wmeSpeedsChatAddonCounter > 10) {
-  //     console.log("WME Speeds: Stop - WME Chat addon not instal.");
-  //     alert('WME Speeds needs WME Chat addon - instal or enable - https://greasyfork.org/scripts/2103-wme-chat-addon');
-
-  //     return ;
-  //   }
-  //   else {
-  //     console.log("WME Speeds: WME Chat addon : NOK");
-  //     setTimeout(initialiseSpeedsHighlights, 500);
-  //     wmeSpeedsChatAddonCounter++;
-
-  //     return;
-  //   }
-  // }
-
   wmeSpeedsLayer = new unsafeWindow.OpenLayers.Layer.Vector("Speeds", {
     displayInLayerSwitcher: true,
     uniqueName: "__DrawSegmentSpeeds"
@@ -595,7 +567,6 @@ function initialiseSpeedsHighlights() {
     options = JSON.parse(localStorage.WMESpeedsScript);
 
     getId('_wmeSpeedsInvert').checked = options[1];
-    // getId('_wmeSpeedsOneWay').checked = options[2];
     getId('_wmeSpeedsDrivable').checked = options[3];
     getId('_wmeSpeedsTransparentColors').checked = options[4];
   }
@@ -612,7 +583,6 @@ function initialiseSpeedsHighlights() {
       }
 
       options[1] = getId('_wmeSpeedsInvert').checked;
-      // options[2] = getId('_wmeSpeedsOneWay').checked;
       options[3] = getId('_wmeSpeedsDrivable').checked;
       options[4] = getId('_wmeSpeedsTransparentColors').checked;
 
@@ -623,7 +593,6 @@ function initialiseSpeedsHighlights() {
   window.addEventListener("beforeunload", saveWmeSpeedsOptions, false);
 
   getId('_wmeSpeedsInvert').onclick = highlightSpeedsSegmentsReset;
-  // getId('_wmeSpeedsOneWay').onclick = highlightSpeedsSegmentsReset;
   getId('_wmeSpeedsDrivable').onclick = highlightSpeedsSegmentsReset;
   getId('_wmeSpeedsTransparentColors').onclick = highlightSpeedsSegmentsReset;
 
