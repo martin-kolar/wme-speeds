@@ -42,7 +42,7 @@ var wmeSpeedsTranslation = [];
 
 //  cs translation
 wmeSpeedsTranslation['cs'] = {
-  'tabName': 'Rychlosti',
+  'tabName': 'R',
   'speedsHeadline': 'Barvy segmentů dle rychlostí',
   'forumLink': '<a href="https://www.waze.com/forum/viewtopic.php?f=22&t=166406" target="_blank">České fórum</a>',
   'author': 'Autor: martinkolar (4)',
@@ -59,7 +59,7 @@ wmeSpeedsTranslation['cs'] = {
 
 //  sk translation
 wmeSpeedsTranslation['sk'] = {
-  'tabName': 'Rýchlosti',
+  'tabName': 'R',
   'speedsHeadline': 'Farby segmentov podľa rýchlostí',
   'forumLink': '<a href="https://www.waze.com/forum/viewtopic.php?f=22&t=166406" target="_blank">České fórum</a>',
   'author': 'Autor: martinkolar (4)',
@@ -76,7 +76,7 @@ wmeSpeedsTranslation['sk'] = {
 
 //  en translation
 wmeSpeedsTranslation['en'] = {
-  'tabName': 'Speeds',
+  'tabName': 'S',
   'speedsHeadline': 'Colors by speed',
   'forumLink': '<a href="https://www.waze.com/forum/viewtopic.php?f=819&t=166497" target="_blank">English discussion</a>',
   'author': 'Author: martinkolar (CZ)',
@@ -434,7 +434,7 @@ function makeSpeedsTab() {
   var tabContent = getElementsByClassName('tab-content', userTabs)[0];
 
   newtab = document.createElement('li');
-  newtab.innerHTML = '<a href="#sidepanel-wme-speeds" data-toggle="tab">' + fe_t('tabName') + '</a>';
+  newtab.innerHTML = '<a href="#sidepanel-wme-speeds" data-toggle="tab" style="position:relative;padding-left:25px;"><span style="position: absolute;top: 5px;left: 5px;border: 2px solid red;width: 16px;height: 16px;border-radius: 100%;font-size: 8px;text-align: center;line-height: 15px;">50</span>' + fe_t('tabName') + '</a>';
   navTabs.appendChild(newtab);
 
   addon.id = "sidepanel-wme-speeds";
