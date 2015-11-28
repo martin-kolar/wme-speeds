@@ -410,6 +410,11 @@ function makeSpeedsTab() {
 
   addon.innerHTML += '<h3 style="margin-bottom: 5px;">' + fe_t('speedsHeadline') + '</h3>';
 
+  addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsInvert" title="' + fe_t('invertSpeedsTitle') + '" /> <span title="' + fe_t('invertSpeedsContent') + '">' + fe_t('invertSpeedsContent') + '</span><br>';
+  addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsDrivable" title="' + fe_t('noSpeedsSegmentsTitle') + '" /> <span title="' + fe_t('noSpeedsSegmentsContent') + '">' + fe_t('noSpeedsSegmentsContent') + '</span><br>';
+  addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsTransparentColors" title="' + fe_t('transparentColorsTitle') + '" /> <span title="' + fe_t('transparentColorsContent') + '">' + fe_t('transparentColorsContent') + '</span><br>';
+  addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsUnverifed" title="' + fe_t('unverifiedSegmentsTitle') + '" /> <span title="' + fe_t('unverifiedSegmentsContent') + '">' + fe_t('unverifiedSegmentsContent') + '</span><br>';
+
   if (wmeSpeedsMiles) {
     speedsForTab = wmeSpeedsColorsMph;
     colorForSpeedText = wmeSpeedsTextColorsMph;
@@ -437,11 +442,6 @@ function makeSpeedsTab() {
 
     addon.innerHTML += '<div style="background-color: ' + speedsForTab[i] + ';padding:2px 0;border-radius: 5px;color:' + colorForSpeedText[i] + ';font-size:14px;text-align:center;margin-bottom: 3px;">' + actualSpeedForTab + '</div>';
   }
-
-  addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsInvert" title="' + fe_t('invertSpeedsTitle') + '" /> <span title="' + fe_t('invertSpeedsContent') + '">' + fe_t('invertSpeedsContent') + '</span><br>';
-  addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsDrivable" title="' + fe_t('noSpeedsSegmentsTitle') + '" /> <span title="' + fe_t('noSpeedsSegmentsContent') + '">' + fe_t('noSpeedsSegmentsContent') + '</span><br>';
-  addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsTransparentColors" title="' + fe_t('transparentColorsTitle') + '" /> <span title="' + fe_t('transparentColorsContent') + '">' + fe_t('transparentColorsContent') + '</span><br>';
-  addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsUnverifed" title="' + fe_t('unverifiedSegmentsTitle') + '" /> <span title="' + fe_t('unverifiedSegmentsContent') + '">' + fe_t('unverifiedSegmentsContent') + '</span><br>';
 
   addon.innerHTML += '<p style="font-size:11px;margin-top:5px;">' + fe_t('forumLink') + '<br>' + fe_t('author') + '<br>' + fe_t('version') + ' ' + wmeSpeedsVersion + '</p>';
 
