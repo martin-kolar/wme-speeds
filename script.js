@@ -6,7 +6,7 @@
 // @include             https://editor-beta.waze.com/*
 // @include             https://www.waze.com/editor/*
 // @include             https://www.waze.com/*/editor/*
-// @version             0.3
+// @version             0.3.1
 // @grant               none
 // ==/UserScript==
 
@@ -15,7 +15,7 @@
 
 // global variables
 
-var wmeSpeedsVersion = "0.3";
+var wmeSpeedsVersion = "0.3.1";
 var wmeSpeedsInit = false;
 var wmeSpeedsColors =     ['#ff0000',    '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
 var wmeSpeedsColorsTransparent = [];
@@ -55,6 +55,8 @@ wmeSpeedsTranslation['cs'] = {
   'noSpeedsSegmentsContent': 'Zvýrazní nesjízdné segmenty s rychlostmi (růžová)',
   'transparentColorsTitle': 'Průhledné barvy',
   'transparentColorsContent': 'Zprůhlednit barvy rychlostí',
+  'unverifiedSegmentsTitle': 'Zvýraznit nepotvrzené rychlosti na segmentech',
+  'unverifiedSegmentsContent': 'Zvýraznit nepotvrzené rychlosti na segmentech',
 }
 
 //  sk translation
@@ -72,6 +74,8 @@ wmeSpeedsTranslation['sk'] = {
   'noSpeedsSegmentsContent': 'Zvýrazní nezjazdné segmenty s rýchlosťami (ružová)',
   'transparentColorsTitle': 'Průhledné barvy',
   'transparentColorsContent': 'Zprůhlednit barvy rychlostí',
+  'unverifiedSegmentsTitle': 'Zvýraznit nepotvrzené rychlosti na segmentech',
+  'unverifiedSegmentsContent': 'Zvýraznit nepotvrzené rychlosti na segmentech',
 }
 
 //  en translation
@@ -89,6 +93,8 @@ wmeSpeedsTranslation['en'] = {
   'noSpeedsSegmentsContent': 'Highlight non-drivable segments with speeds (pink)',
   'transparentColorsTitle': 'Transparent color',
   'transparentColorsContent': 'Make speeds colors transparent',
+  'unverifiedSegmentsTitle': 'Highlight unverified segments',
+  'unverifiedSegmentsContent': 'Highlight unverified segments',
 }
 
 /* =========================================================================== */
@@ -101,6 +107,7 @@ function highlightSpeedsSegments(event) {
   wmeSpeedsInvertSpeedsColors = getId('_wmeSpeedsInvert').checked;
   wmeSpeedsNonDrivableSpeedsColors = getId('_wmeSpeedsDrivable').checked;
   wmeSpeedsTransparentColors = getId('_wmeSpeedsTransparentColors').checked;
+  wmeSpeedsUnverified = getId('_wmeSpeedsUnverifed').checked;
   wmeSpeedsHighlightOneWay = false;
 
   if (wmeSpeedsLayer.getVisibility() && !wmeSpeedsHardResetColors) {
@@ -282,7 +289,7 @@ function highlightSpeedsSegments(event) {
           }
 
           newDashes = "10 10";
-          newColor = '#';
+          newColor = '#ffffff';
           newWidth = 10;
 
           if (!attributes.fwdDirection) {
@@ -332,6 +339,11 @@ function highlightSpeedsSegments(event) {
         }
         else {
           newColor = speed2color;
+        }
+
+        if (wmeSpeedsUnverified && (attributes.revMaxSpeedUnverified || attributes.fwdMaxSpeedUnverified)) {
+          newDashes = "15 15";
+          newWidth = 6;
         }
       }
 
@@ -426,6 +438,7 @@ function makeSpeedsTab() {
   addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsInvert" title="' + fe_t('invertSpeedsTitle') + '" /> <span title="' + fe_t('invertSpeedsContent') + '">' + fe_t('invertSpeedsContent') + '</span><br>';
   addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsDrivable" title="' + fe_t('noSpeedsSegmentsTitle') + '" /> <span title="' + fe_t('noSpeedsSegmentsContent') + '">' + fe_t('noSpeedsSegmentsContent') + '</span><br>';
   addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsTransparentColors" title="' + fe_t('transparentColorsTitle') + '" /> <span title="' + fe_t('transparentColorsContent') + '">' + fe_t('transparentColorsContent') + '</span><br>';
+  addon.innerHTML += '<input type="checkbox" id="_wmeSpeedsUnverifed" title="' + fe_t('unverifiedSegmentsTitle') + '" /> <span title="' + fe_t('unverifiedSegmentsContent') + '">' + fe_t('unverifiedSegmentsContent') + '</span><br>';
 
   addon.innerHTML += '<p style="font-size:11px;margin-top:5px;">' + fe_t('forumLink') + '<br>' + fe_t('author') + '<br>' + fe_t('version') + ' ' + wmeSpeedsVersion + '</p>';
 
@@ -434,7 +447,7 @@ function makeSpeedsTab() {
   var tabContent = getElementsByClassName('tab-content', userTabs)[0];
 
   newtab = document.createElement('li');
-  newtab.innerHTML = '<a href="#sidepanel-wme-speeds" data-toggle="tab" style="position:relative;padding-left:25px;"><span style="position: absolute;top: 5px;left: 5px;border: 2px solid red;width: 16px;height: 16px;border-radius: 100%;font-size: 8px;text-align: center;line-height: 15px;">50</span>' + fe_t('tabName') + '</a>';
+  newtab.innerHTML = '<a href="#sidepanel-wme-speeds" data-toggle="tab" style="position:relative;padding-left:25px !important;"><span style="position: absolute;top: 5px;left: 5px;border: 2px solid red;width: 16px;height: 16px;border-radius: 100%;font-size: 8px;text-align: center;line-height: 15px;">50</span>' + fe_t('tabName') + '</a>';
   navTabs.appendChild(newtab);
 
   addon.id = "sidepanel-wme-speeds";
@@ -569,6 +582,7 @@ function initialiseSpeedsHighlights() {
     getId('_wmeSpeedsInvert').checked = options[1];
     getId('_wmeSpeedsDrivable').checked = options[3];
     getId('_wmeSpeedsTransparentColors').checked = options[4];
+    getId('_wmeSpeedsUnverifed').checked = options[4];
   }
 
   // overload the WME exit function
@@ -595,6 +609,7 @@ function initialiseSpeedsHighlights() {
   getId('_wmeSpeedsInvert').onclick = highlightSpeedsSegmentsReset;
   getId('_wmeSpeedsDrivable').onclick = highlightSpeedsSegmentsReset;
   getId('_wmeSpeedsTransparentColors').onclick = highlightSpeedsSegmentsReset;
+  getId('_wmeSpeedsUnverifed').onclick = highlightSpeedsSegmentsReset;
 
   for (i = 0; i < wmeSpeedsColors.length; i++) {
     wmeSpeedsColorsTransparent[i] = 'rgba(' + hexToRgb(wmeSpeedsColors[i]).r + ', ' + hexToRgb(wmeSpeedsColors[i]).g + ', ' + hexToRgb(wmeSpeedsColors[i]).b + ', 0.4)';
