@@ -6,7 +6,7 @@
 // @include             https://editor-beta.waze.com/*
 // @include             https://www.waze.com/editor/*
 // @include             https://www.waze.com/*/editor/*
-// @version             0.3.3
+// @version             0.3.4
 // @grant               none
 // ==/UserScript==
 
@@ -15,7 +15,7 @@
 
 // global variables
 
-var wmeSpeedsVersion = "0.3.3";
+var wmeSpeedsVersion = '0.3.4';
 var wmeSpeedsInit = false;
 var wmeSpeedsColors =     ['#ff0000',    '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
 var wmeSpeedsColorsTransparent = [];
