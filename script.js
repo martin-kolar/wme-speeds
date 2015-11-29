@@ -36,7 +36,7 @@ var wmeSpeedsInvertSpeedsColors, wmeSpeedsHighlightOneWay, wmeSpeedsNonDrivableS
 var wmeSpeedsChatAddonCounter = 0;
 
 //  language settings
-var wmeSpeedsAllowLanguage = ['cs', 'en', 'sk'];
+var wmeSpeedsAllowLanguage = ['cs', 'en', 'sk', 'he'];
 var wmeSpeedsLanguage = 'en';  //  default language
 var wmeSpeedsTranslation = [];
 
@@ -98,6 +98,25 @@ wmeSpeedsTranslation['en'] = {
   'unverifiedSegmentsContent': 'Highlight unverified segments',
   'scriptName': 'WME Speeds',
   'layerName': 'Speeds',
+}
+
+//  Heb translation
+wmeSpeedsTranslation['he'] = {
+  'tabName': 'S',
+  'speedsHeadline': 'מקרא מהירויות לפי צבעים',
+  'forumLink': '<a href="https://www.waze.com/forum/viewtopic.php?f=819&t=166497" target="_blank">English discussion</a>',
+  'author': 'יוצר: martinkolar (CZ)',
+  'version': 'גרסא:',
+  'invertSpeedsTitle': 'הפוך מהירות',
+  'invertSpeedsContent': 'הדגש מקטעים ללא מהירות מוגדרת (אדום)',
+  'noSpeedsSegmentsTitle': 'מקטעים שאינם ניתנים לנהיגה עם מהירות מוגדרת',
+  'noSpeedsSegmentsContent': 'הדגש מקטעים שאינם לנהיגה עם מהירות מוגדרת (ורוד)',
+  'transparentColorsTitle': 'מצב שקיפות',
+  'transparentColorsContent': 'הפעל מצב שקיפות צבעי מהירויות',
+  'unverifiedSegmentsTitle': 'הדגש מקטעים לא מאומתים',
+  'unverifiedSegmentsContent': 'הדגש מקטעים לא מאומתים',
+  'scriptName': 'WME Speeds',
+  'layerName': 'מהירויות',
 }
 
 /* =========================================================================== */
