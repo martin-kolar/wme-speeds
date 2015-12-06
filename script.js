@@ -29,7 +29,7 @@ var wmeSpeedsMaxMphSpeed = 86;
 var wmeSpeedsLayer;
 var wmeSpeedsResetColors = false;
 var wmeSpeedsHardResetColors = false;
-var wmeSpeedsNonDrivableSegments = [5, 10, 16, 18, 19, 20, 17, 15];
+var wmeSpeedsNonDrivableSegments = [5, 8, 10, 16, 18, 19, 20, 17, 15];
 var wmeSpeedsMiles = false;
 var wmeSpeedsKmphToMphRatio = 0.621371192;
 var wmeSpeedsInvertSpeedsColors, wmeSpeedsHighlightOneWay, wmeSpeedsNonDrivableSpeedsColors;
