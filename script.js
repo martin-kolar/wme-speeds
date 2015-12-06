@@ -73,12 +73,12 @@ wmeSpeedsTranslation['sk'] = {
   'invertSpeedsContent': 'Zvýrazní iba segmenty bez rýchlosti (červená)',
   'noSpeedsSegmentsTitle': 'Nezjazdné segmenty s rýchlosťou',
   'noSpeedsSegmentsContent': 'Zvýrazní nezjazdné segmenty s rýchlosťami (ružová)',
-  'transparentColorsTitle': 'Průhledné barvy',
-  'transparentColorsContent': 'Zprůhlednit barvy rychlostí',
-  'unverifiedSegmentsTitle': 'Zvýraznit nepotvrzené rychlosti na segmentech',
-  'unverifiedSegmentsContent': 'Zvýraznit nepotvrzené rychlosti na segmentech',
+  'transparentColorsTitle': 'Priehľadné farby',
+  'transparentColorsContent': 'Spriehľadniť farby rýchlostí',
+  'unverifiedSegmentsTitle': 'Nepotvrdené rýchlosti na segmentoch',
+  'unverifiedSegmentsContent': 'Zvýrazniť nepotvrdené rýchlosti na segmentoch',
   'scriptName': 'WME Speeds',
-  'layerName': 'Rychlosti',
+  'layerName': 'Rýchlosti',
 }
 
 //  en translation
