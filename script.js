@@ -17,12 +17,12 @@
 
 var wmeSpeedsVersion = '0.3.4';
 var wmeSpeedsInit = false;
-var wmeSpeedsColors =     ['#ff0000',    '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
+var wmeSpeedsColors =     ['#ff0000',     '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
 var wmeSpeedsColorsTransparent = [];
-var wmeSpeedsTextColors = ['#000000', '#ffffff', '#ffffff', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#ffffff', '#ffffff'];
-var wmeSpeedsColorsMph =     ['#ff0000',    '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#000000'];
+var wmeSpeedsTextColors = ['#000000',     '#ffffff', '#ffffff', '#ffffff', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#ffffff', '#ffffff', '#ffffff'];
+var wmeSpeedsColorsMph =     ['#ff0000',  '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#000000'];
 var wmeSpeedsColorsMphTransparent = [];
-var wmeSpeedsTextColorsMph = ['#000000', '#ffffff', '#ffffff', '#ffffff', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#ffffff', '#ffffff', '#ffffff'];
+var wmeSpeedsTextColorsMph = ['#000000',  '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#ffffff', '#ffffff', '#ffffff', '#ffffff'];
 var wmeSpeedsAvailableColor = ['#ff0000', '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#ff00ff', '#000', '#ffffff', '#999999', '#DC0073'];
 var wmeSpeedsMaxSpeed = 131;
 var wmeSpeedsMaxMphSpeed = 86;
@@ -50,7 +50,7 @@ wmeSpeedsTranslation['cs'] = {
   'tabName': 'R',
   'speedsHeadline': 'Barvy segmentů dle rychlostí',
   'forumLink': '<a href="https://www.waze.com/forum/viewtopic.php?f=22&t=166406" target="_blank">České fórum</a>',
-  'author': 'Autor: martinkolar (4)',
+  'author': 'Autor: <a href="https://www.waze.com/cs/user/editor/martinkolar" target="_blank">martinkolar (4)</a>',
   'version': 'Verze:',
   'invertSpeedsTitle': 'Invertovat barvy rychlostí',
   'invertSpeedsContent': 'Segmenty bez rychlosti (červená)',
@@ -67,7 +67,7 @@ wmeSpeedsTranslation['sk'] = {
   'tabName': 'R',
   'speedsHeadline': 'Farby segmentov podľa rýchlostí',
   'forumLink': '<a href="https://www.waze.com/forum/viewtopic.php?f=22&t=166406" target="_blank">České fórum</a>',
-  'author': 'Autor: martinkolar (4)',
+  'author': 'Autor: <a href="https://www.waze.com/cs/user/editor/martinkolar" target="_blank">martinkolar (CZ)</a>',
   'version': 'Verzia:',
   'invertSpeedsTitle': 'Invertovať farby rýchlostí',
   'invertSpeedsContent': 'Zvýrazní iba segmenty bez rýchlosti (červená)',
@@ -86,7 +86,7 @@ wmeSpeedsTranslation['en'] = {
   'tabName': 'S',
   'speedsHeadline': 'Colors by speed',
   'forumLink': '<a href="https://www.waze.com/forum/viewtopic.php?f=819&t=166497" target="_blank">English discussion</a>',
-  'author': 'Author: martinkolar (CZ)',
+  'author': 'Author: <a href="https://www.waze.com/cs/user/editor/martinkolar" target="_blank">martinkolar (CZ)</a>',
   'version': 'Version:',
   'invertSpeedsTitle': 'Invert speed',
   'invertSpeedsContent': 'Highlight segments without set speed (red)',
@@ -448,23 +448,23 @@ function makeSpeedsTab() {
   for (i = 1; i < speedsForTab.length; i++) {
     if ((i+1) == speedsForTab.length) {
       if (wmeSpeedsMiles) {
-        actualSpeedForTab = ' &gt; ' + wmeSpeedsMaxMphSpeed + 'mph';
+        actualSpeedForTab = ' &gt; ' + wmeSpeedsMaxMphSpeed + '&nbsp;mph';
       }
       else {
-        actualSpeedForTab = ' &gt; ' + wmeSpeedsMaxSpeed + 'km/h';
+        actualSpeedForTab = ' &gt; ' + wmeSpeedsMaxSpeed + '&nbsp;km/h';
       }
     }
     else if (wmeSpeedsMiles) {
-      actualSpeedForTab = (i * 5) + 'mph';
+      actualSpeedForTab = (i * 5) + '&nbsp;mph';
     }
     else {
-      actualSpeedForTab = (i * 10) + 'km/h';
+      actualSpeedForTab = (i * 10) + '&nbsp;km/h';
     }
 
-    addon.innerHTML += '<div style="background-color: ' + speedsForTab[i] + ';padding:2px 0;border-radius: 5px;color:' + colorForSpeedText[i] + ';font-size:14px;text-align:center;margin-bottom: 3px;">' + actualSpeedForTab + '</div>';
+    addon.innerHTML += '<div style="width: 28%; float: left;background-color: ' + speedsForTab[i] + ';padding:2px 0;border-radius:5px;color:' + colorForSpeedText[i] + ';font-size:14px;text-align:center;margin: 0 3px 3px;">' + actualSpeedForTab + '</div>';
   }
 
-  addon.innerHTML += '<p style="font-size:11px;margin-top:15px;">' + fe_t('forumLink') + '<br>' + fe_t('author') + '<br>' + fe_t('version') + ' ' + wmeSpeedsVersion + '</p>';
+  addon.innerHTML += '<p style="font-size:11px;margin-top:15px;clear:both;">' + fe_t('forumLink') + '<br>' + fe_t('author') + '<br>' + fe_t('version') + ' ' + wmeSpeedsVersion + '</p>';
 
   var userTabs = getId('user-info');
   var navTabs = getElementsByClassName('nav-tabs', userTabs)[0];
