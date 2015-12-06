@@ -53,13 +53,13 @@ wmeSpeedsTranslation['cs'] = {
   'author': 'Autor: martinkolar (4)',
   'version': 'Verze:',
   'invertSpeedsTitle': 'Invertovat barvy rychlostí',
-  'invertSpeedsContent': 'Zvýrazní pouze segmenty bez rychlosti (červená)',
+  'invertSpeedsContent': 'Segmenty bez rychlosti (červená)',
   'noSpeedsSegmentsTitle': 'Nesjízdné segmenty s rychlostí',
-  'noSpeedsSegmentsContent': 'Zvýrazní nesjízdné segmenty s rychlostmi (růžová)',
-  'transparentColorsTitle': 'Průhledné barvy',
-  'transparentColorsContent': 'Zprůhlednit barvy rychlostí',
-  'unverifiedSegmentsTitle': 'Zvýraznit nepotvrzené rychlosti na segmentech',
-  'unverifiedSegmentsContent': 'Zvýraznit nepotvrzené rychlosti na segmentech',
+  'noSpeedsSegmentsContent': 'Nesjízdné segmenty s rychlostmi (růžová)',
+  'transparentColorsTitle': 'Průsvitné barvy',
+  'transparentColorsContent': 'Průsvitné barvy',
+  'unverifiedSegmentsTitle': 'Nepotvrzené rychlosti na segmentech',
+  'unverifiedSegmentsContent': 'Nepotvrzené rychlosti na segmentech',
 }
 
 //  sk translation
