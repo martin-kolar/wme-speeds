@@ -6,7 +6,7 @@
 // @include             https://editor-beta.waze.com/*
 // @include             https://www.waze.com/editor/*
 // @include             https://www.waze.com/*/editor/*
-// @version             0.3.6
+// @version             0.3.7
 // @grant               none
 // ==/UserScript==
 
@@ -15,7 +15,7 @@
 
 // global variables
 
-var wmeSpeedsVersion = '0.3.6';
+var wmeSpeedsVersion = '0.3.7';
 var wmeSpeedsInit = false;
 var wmeSpeedsColors =     ['#ff0000',     '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
 var wmeSpeedsColorsTransparent = [];
@@ -564,6 +564,12 @@ function initialiseSpeedsHighlights() {
     wmeSpeedsLanguage = I18n.locale;
   }
 
+  userInfo = getId('user-info');
+  if (typeof getElementsByClassName('nav-tabs', userInfo)[0] === 'undefined') {
+    setTimeout(initialiseSpeedsHighlights, 500);
+    return ;
+  }
+
   wmeSpeedsLayer = new OpenLayers.Layer.Vector(fe_t('layerName'), {
     displayInLayerSwitcher: true,
     uniqueName: "__DrawSegmentSpeeds"
@@ -571,12 +577,6 @@ function initialiseSpeedsHighlights() {
 
   I18n.translations.en.layers.name["__DrawSegmentSpeeds"] = fe_t('scriptName');
   Waze.map.addLayer(wmeSpeedsLayer);
-
-  userInfo = getId('user-info');
-  if (typeof getElementsByClassName('nav-tabs', userInfo)[0] === 'undefined') {
-    setTimeout(initialiseSpeedsHighlights, 500);
-    return ;
-  }
 
   if (localStorage.DrawSegmentSpeeds) {
     wmeSpeedsLayer.setVisibility(localStorage.DrawSegmentSpeeds == "true");
