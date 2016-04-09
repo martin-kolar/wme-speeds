@@ -8,7 +8,7 @@
 // @include             https://www.waze.com/*/editor/*
 // @exclude             https://www.waze.com/user/*editor/*
 // @exclude             https://www.waze.com/*/user/*editor/*
-// @version             0.4.0
+// @version             0.4.1
 // @grant               none
 // @contributor         FZ69617
 // ==/UserScript==
@@ -18,7 +18,7 @@
 
 // global variables
 
-var wmeSpeedsVersion = '0.4.0';
+var wmeSpeedsVersion = '0.4.1';
 var wmeSpeedsInit = false;
 var wmeSpeedsColors =    ['#ff0000', '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
 var wmeSpeedsColorsMph = ['#ff0000', '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#000000'];
@@ -173,16 +173,15 @@ function highlightSpeedsSegments(event) {
       var attributes = segment.attributes;
       var roadType = attributes.roadType;
 
-      if ((wmeSpeedsNonDrivableSegments.indexOf(roadType) != -1 && wmeSpeedsNonDrivableSpeedsColors) ||
-          (wmeSpeedsOtherDrivableSegments.indexOf(roadType) != -1) && wmeSpeedsOtherDrivableSpeedsColors) {
+      if ((wmeSpeedsNonDrivableSpeedsColors && wmeSpeedsNonDrivableSegments.indexOf(roadType) != -1) ||
+          (wmeSpeedsOtherDrivableSpeedsColors && wmeSpeedsOtherDrivableSegments.indexOf(roadType) != -1)) {
         if (typeof attributes.fwdMaxSpeed == 'number' || typeof attributes.revMaxSpeed == 'number') {
           features.push(new OpenLayers.Feature.Vector(segment.geometry.clone(), {}, {
               strokeColor: "#DC0073",
-              strokeWidth: 10,
+              strokeWidth: 8,
               strokeOpacity: speedOpacity
             }));
         }
-
         continue;
       }
 
@@ -195,7 +194,7 @@ function highlightSpeedsSegments(event) {
 
       if (speed1.allow && typeof attributes.fwdMaxSpeed == 'number') {
         speed1.value = speedValue(attributes.fwdMaxSpeed);
-        speed1.exact = (speed1.value % speedDiv) == 0;
+        speed1.exact = (speed1.value % speedDiv) === 0;
 
         if (speed1.value >= maxSpeed) {
           speed1.index = Math.ceil(maxSpeed / speedDiv);
@@ -207,7 +206,7 @@ function highlightSpeedsSegments(event) {
 
       if (speed2.allow && typeof attributes.revMaxSpeed == 'number') {
         speed2.value = speedValue(attributes.revMaxSpeed);
-        speed2.exact = (speed2.value % speedDiv) == 0;
+        speed2.exact = (speed2.value % speedDiv) === 0;
 
         if (speed2.value >= maxSpeed) {
           speed2.index = Math.ceil(maxSpeed / speedDiv);
@@ -220,18 +219,16 @@ function highlightSpeedsSegments(event) {
       speed1.color = speedsColors[speed1.index];
       speed2.color = speedsColors[speed2.index];
 
-      if (!wmeSpeedsInvertSpeedsColors && ((speed1.index == 0  && speed2.index == 0) || (!speed2.allow && speed1.index == 0) || (!speed1.allow && speed2.index == 0))) {
+      if (!wmeSpeedsInvertSpeedsColors && ((speed1.index === 0  && speed2.index === 0) || (!speed2.allow && speed1.index === 0) || (!speed1.allow && speed2.index === 0))) {
         continue;
       }
 
-      if (wmeSpeedsInvertSpeedsColors && ((speed1.index == 0  && speed2.index == 0) || (!speed2.allow && speed1.index == 0) || (!speed1.allow && speed2.index == 0))) {
-
+      if (wmeSpeedsInvertSpeedsColors && ((speed1.index === 0  && speed2.index === 0) || (!speed2.allow && speed1.index === 0) || (!speed1.allow && speed2.index === 0))) {
         features.push(new OpenLayers.Feature.Vector(segment.geometry.clone(), {}, {
             strokeColor: "#ff0000",
             strokeWidth: 8,
-            strokeOpacity: 1
+            strokeOpacity: speedOpacity
           }));
-
         continue;
       }
 
@@ -240,31 +237,29 @@ function highlightSpeedsSegments(event) {
       }
 
       if (wmeSpeedsHighlightOneWay && ((!attributes.fwdDirection && typeof attributes.fwdMaxSpeed == 'number') || (!attributes.revDirection && typeof attributes.revMaxSpeed == 'number'))) {
-
         features.push(new OpenLayers.Feature.Vector(segment.geometry.clone(), {}, {
             strokeColor: attributes.fwdDirection ? "#ffffff" : "#999999",
-            strokeWidth: 10,
             strokeDashstyle: "15 15",
-            strokeOpacity: 1
+            strokeWidth: 8,
+            strokeOpacity: speedOpacity
           }));
-
         continue;
       }
 
       var oneSpeed = null;
 
       if (speed1.allow && speed2.allow) {
-        if (speed1.index == 0 || speed2.index == 0) {
+        if (speed1.index === 0 || speed2.index === 0) {
           features.push(new OpenLayers.Feature.Vector(segment.geometry.clone(), {}, {
               strokeColor: "#ff00ff",
               strokeWidth: 8,
-              strokeOpacity: 1
+              strokeOpacity: speedOpacity
             }));
           continue;
         }
 
-        if ((speed1.index == speed2.index) && (speed1.exact === speed2.exact)
-                   && (!wmeSpeedsUnverified || (speed1.unverified === speed2.unverified))) {
+        if ((speed1.index == speed2.index) && (speed1.exact === speed2.exact) &&
+            (!wmeSpeedsUnverified || (speed1.unverified === speed2.unverified))) {
           oneSpeed = speed1;
         }
       }
@@ -301,7 +296,7 @@ function highlightSpeedsSegments(event) {
         features.push(new OpenLayers.Feature.Vector(segment.geometry.clone(), {}, {
             strokeColor: "#ff00ff",
             strokeWidth: 8,
-            strokeOpacity: 1
+            strokeOpacity: speedOpacity
           }));
         continue;
       }
@@ -331,7 +326,6 @@ function highlightSpeedsSegments(event) {
                 strokeWidth: 8,
                 strokeOpacity: speedOpacity
               }));
-
           }
       }
 
@@ -355,7 +349,6 @@ function highlightSpeedsSegments(event) {
                 strokeWidth: 8,
                 strokeOpacity: speedOpacity
               }));
-
           }
       }
 
@@ -371,9 +364,9 @@ function makeSpeedsTab() {
 
   addon.innerHTML += '<h3 style="margin-bottom: 5px;">' + fe_t('speedsHeadline') + '</h3>';
 
-  var optionHtml = function(id, title_t, content_t) {
+  function optionHtml(id, title_t, content_t) {
     return '<label title="' + fe_t(content_t) + '"><input id="' + id + '" type="checkbox"/>' + fe_t(title_t) + '</label><br>';
-  };
+  }
 
   addon.innerHTML += optionHtml("_wmeSpeedsInvert", 'invertSpeedsTitle', 'invertSpeedsContent');
   addon.innerHTML += optionHtml("_wmeSpeedsNonDrivable", 'noSpeedsSegmentsTitle', 'noSpeedsSegmentsContent');
@@ -437,7 +430,12 @@ function getId(node) {
 
 function changeLayer() {
   localStorage.DrawSegmentSpeeds = wmeSpeedsLayer.getVisibility();
-  highlightSpeedsSegments();
+    
+  if (wmeSpeedsLayer.getVisibility()) {
+    highlightSpeedsSegments();
+  } else {
+    wmeSpeedsLayer.removeAllFeatures();
+  }
 }
 
 function kmphToMph(kmph) {
