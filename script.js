@@ -8,7 +8,7 @@
 // @include             https://www.waze.com/*/editor/*
 // @exclude             https://www.waze.com/user/*editor/*
 // @exclude             https://www.waze.com/*/user/*editor/*
-// @version             0.4.1
+// @version             0.4.2
 // @grant               none
 // @contributor         FZ69617
 // ==/UserScript==
@@ -18,7 +18,7 @@
 
 // global variables
 
-var wmeSpeedsVersion = '0.4.1';
+var wmeSpeedsVersion = '0.4.2';
 var wmeSpeedsInit = false;
 var wmeSpeedsColors =    ['#ff0000', '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
 var wmeSpeedsColorsMph = ['#ff0000', '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#000000'];
@@ -106,10 +106,10 @@ wmeSpeedsTranslation['en'] = {
 wmeSpeedsTranslation['he'] = {
   'tabName': 'S',
   'speedsHeadline': 'מקרא מהירויות לפי צבעים',
-  'forumLink': '<a href="https://www.waze.com/forum/viewtopic.php?f=819&t=166497" target="_blank">English discussion</a>',
+  'forumLink': '<a href="https://www.waze.com/forum/viewtopic.php?f=819&t=166497" target="_blank">דיון בפורום (אנגלית)</a>',
   'author': 'יוצר התוסף: martinkolar (CZ)',
   'version': 'גרסא:',
-  'invertSpeedsTitle': 'הפוך מהירות',
+  'invertSpeedsTitle': 'הפוך הגדרות',
   'invertSpeedsContent': 'הדגש מקטעים ללא מהירות מוגדרת (אדום)',
   'noSpeedsSegmentsTitle': 'מקטעים שאינם ניתנים לנהיגה עם מהירות מוגדרת',
   'noSpeedsSegmentsContent': 'הדגש מקטעים שאינם ניתנים לנהיגה עם מהירות מוגדרת (ורוד)',
