@@ -8,7 +8,7 @@
 // @include             https://www.waze.com/*/editor/*
 // @exclude             https://www.waze.com/user/*editor/*
 // @exclude             https://www.waze.com/*/user/*editor/*
-// @version             0.4.2
+// @version             0.4.3
 // @grant               none
 // @contributor         FZ69617
 // ==/UserScript==
@@ -18,13 +18,14 @@
 
 // global variables
 
-var wmeSpeedsVersion = '0.4.2';
+var wmeSpeedsVersion = '0.4.3';
 var wmeSpeedsInit = false;
 var wmeSpeedsColors =    ['#ff0000', '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
 var wmeSpeedsColorsMph = ['#ff0000', '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#000000'];
 var wmeSpeedsMaxSpeed = 130;
 var wmeSpeedsMaxMphSpeed = 85;
 var wmeSpeedsLayer;
+var wmeSpeedsNonDrivableSpeedSegments = [5, 8, 10, 16, 18, 19, 20, 17, 15];
 var wmeSpeedsOtherDrivableSegments = [8, 20, 117, 115];
 var wmeSpeedsNonDrivableSegments = [5, 10, 16, 18, 19];
 var wmeSpeedsMiles = false;
@@ -48,8 +49,10 @@ wmeSpeedsTranslation['cs'] = {
   'forumLink': '<a href="https://www.waze.com/forum/viewtopic.php?f=22&t=166406" target="_blank">České fórum</a>',
   'author': 'Autor: <a href="https://www.waze.com/cs/user/editor/martinkolar" target="_blank">martinkolar (4)</a>',
   'version': 'Verze:',
-  'invertSpeedsTitle': 'Invertovat barvy rychlostí',
-  'invertSpeedsContent': 'Zvýrazní jen segmenty bez rychlosti (červená)',
+  'invertSpeedsTitleNonDrivable': 'Invertovat barvy rychlostí (pouze s možností nastavení rychlosti)',
+  'invertSpeedsContentNonDrivable': 'Zvýrazní jen segmenty bez rychlosti (sjízdné) (červená)',
+  'invertSpeedsTitle': 'Invertovat barvy rychlostí (všechny segmenty)',
+  'invertSpeedsContent': 'Zvýrazní jen segmenty bez rychlosti (nesjízdné) (červená)',
   'noSpeedsSegmentsTitle': 'Nesjízdné segmenty s rychlostí',
   'noSpeedsSegmentsContent': 'Zvýrazní nesjízdné segmenty s rychlostmi (růžová)',
   'noSpeedsSegmentsOtherTitle': 'Jinak sjízdné segmenty s rychlostí',
@@ -67,6 +70,8 @@ wmeSpeedsTranslation['sk'] = {
   'forumLink': '<a href="https://www.waze.com/forum/viewtopic.php?f=22&t=166406" target="_blank">České fórum</a>',
   'author': 'Autor: <a href="https://www.waze.com/cs/user/editor/martinkolar" target="_blank">martinkolar (CZ)</a>',
   'version': 'Verzia:',
+  'invertSpeedsTitleNonDrivable': 'Invertovať farby rýchlostí (pouze s možností nastavení rychlosti)',
+  'invertSpeedsContentNonDrivable': 'Zvýrazní iba segmenty bez rýchlosti (sjízdné) (červená)',
   'invertSpeedsTitle': 'Invertovať farby rýchlostí',
   'invertSpeedsContent': 'Zvýrazní iba segmenty bez rýchlosti (červená)',
   'noSpeedsSegmentsTitle': 'Nezjazdné segmenty s rýchlosťou',
@@ -88,6 +93,8 @@ wmeSpeedsTranslation['en'] = {
   'forumLink': '<a href="https://www.waze.com/forum/viewtopic.php?f=819&t=166497" target="_blank">English discussion</a>',
   'author': 'Author: <a href="https://www.waze.com/cs/user/editor/martinkolar" target="_blank">martinkolar (CZ)</a>',
   'version': 'Version:',
+  'invertSpeedsTitleNonDrivable': 'Invert speed (only segments with speed settings)',
+  'invertSpeedsContentNonDrivable': 'Highlight segments without set speed (drivable) (red)',
   'invertSpeedsTitle': 'Invert speed',
   'invertSpeedsContent': 'Highlight segments without set speed (red)',
   'noSpeedsSegmentsTitle': 'Non-drivable segments with speeds',
@@ -109,6 +116,8 @@ wmeSpeedsTranslation['he'] = {
   'forumLink': '<a href="https://www.waze.com/forum/viewtopic.php?f=819&t=166497" target="_blank">דיון בפורום (אנגלית)</a>',
   'author': 'יוצר התוסף: martinkolar (CZ)',
   'version': 'גרסא:',
+  'invertSpeedsTitleNonDrivable': 'Invert speed (only segments with speed settings)',
+  'invertSpeedsContentNonDrivable': 'Highlight segments without set speed (drivable) (red)',
   'invertSpeedsTitle': 'הפוך הגדרות',
   'invertSpeedsContent': 'הדגש מקטעים ללא מהירות מוגדרת (אדום)',
   'noSpeedsSegmentsTitle': 'מקטעים שאינם ניתנים לנהיגה עם מהירות מוגדרת',
@@ -132,6 +141,8 @@ wmeSpeedsTranslation['pl'] = {
   'forumLink': 'Forum: <a href="https://www.waze.com/forum/viewtopic.php?f=819&t=166497" target="_blank">angielskie</a> | <a href="https://www.waze.com/forum/viewtopic.php?f=22&t=166406" target="_blank">czeskie</a>',
   'author': 'Autor: <a href="https://www.waze.com/cs/user/editor/martinkolar" target="_blank">martinkolar (4)</a>',
   'version': 'Wersja:',
+  'invertSpeedsTitleNonDrivable': 'Invert speed (only segments with speed settings)',
+  'invertSpeedsContentNonDrivable': 'Highlight segments without set speed (drivable) (red)',
   'invertSpeedsTitle': 'Inwersja kolorów',
   'invertSpeedsContent': 'Zaznacza drogi bez ustawionych ograniczeń prędkości (czerwony)',
   'noSpeedsSegmentsTitle': 'Nieprzejezdne drogi z prędkościami',
@@ -147,6 +158,7 @@ wmeSpeedsTranslation['pl'] = {
 /* =========================================================================== */
 function highlightSpeedsSegments(event) {
   wmeSpeedsInvertSpeedsColors = getId('_wmeSpeedsInvert').checked;
+  wmeSpeedsInvertNonDrivableSpeedsColors = getId('_wmeSpeedsInvertNonDrivable').checked;
   wmeSpeedsNonDrivableSpeedsColors = getId('_wmeSpeedsNonDrivable').checked;
   wmeSpeedsOtherDrivableSpeedsColors = getId('_wmeSpeedsOtherDrivable').checked;
   wmeSpeedsTransparentColors = getId('_wmeSpeedsTransparentColors').checked;
@@ -219,7 +231,7 @@ function highlightSpeedsSegments(event) {
       speed1.color = speedsColors[speed1.index];
       speed2.color = speedsColors[speed2.index];
 
-      if (!wmeSpeedsInvertSpeedsColors && ((speed1.index === 0  && speed2.index === 0) || (!speed2.allow && speed1.index === 0) || (!speed1.allow && speed2.index === 0))) {
+      if ((!wmeSpeedsInvertSpeedsColors && !wmeSpeedsInvertNonDrivableSpeedsColors) && ((speed1.index === 0  && speed2.index === 0) || (!speed2.allow && speed1.index === 0) || (!speed1.allow && speed2.index === 0))) {
         continue;
       }
 
@@ -232,7 +244,16 @@ function highlightSpeedsSegments(event) {
         continue;
       }
 
-      if (wmeSpeedsInvertSpeedsColors) {
+      if (wmeSpeedsInvertNonDrivableSpeedsColors && ((speed1.index === 0  && speed2.index === 0) || (!speed2.allow && speed1.index === 0) || (!speed1.allow && speed2.index === 0)) && wmeSpeedsNonDrivableSpeedSegments.indexOf(roadType) === -1) {
+        features.push(new OpenLayers.Feature.Vector(segment.geometry.clone(), {}, {
+            strokeColor: "#ff0000",
+            strokeWidth: 8,
+            strokeOpacity: speedOpacity
+          }));
+        continue;
+      }
+
+      if (wmeSpeedsInvertSpeedsColors || wmeSpeedsInvertNonDrivableSpeedsColors) {
         continue;
       }
 
@@ -369,6 +390,7 @@ function makeSpeedsTab() {
   }
 
   addon.innerHTML += optionHtml("_wmeSpeedsInvert", 'invertSpeedsTitle', 'invertSpeedsContent');
+  addon.innerHTML += optionHtml("_wmeSpeedsInvertNonDrivable", 'invertSpeedsTitleNonDrivable', 'invertSpeedsContentNonDrivable');
   addon.innerHTML += optionHtml("_wmeSpeedsNonDrivable", 'noSpeedsSegmentsTitle', 'noSpeedsSegmentsContent');
   addon.innerHTML += optionHtml("_wmeSpeedsOtherDrivable", 'noSpeedsSegmentsOtherTitle', 'noSpeedsSegmentsOtherContent');
   addon.innerHTML += optionHtml("_wmeSpeedsTransparentColors", 'transparentColorsTitle', 'transparentColorsContent');
@@ -565,6 +587,7 @@ function initialiseSpeedsHighlights() {
     getId('_wmeSpeedsOtherDrivable').checked = options[3];
     getId('_wmeSpeedsTransparentColors').checked = options[4];
     getId('_wmeSpeedsUnverifed').checked = options[5];
+    getId('_wmeSpeedsInvertNonDrivable').checked = options[6];
   }
 
   // overload the WME exit function
@@ -583,6 +606,7 @@ function initialiseSpeedsHighlights() {
       options[3] = getId('_wmeSpeedsOtherDrivable').checked;
       options[4] = getId('_wmeSpeedsTransparentColors').checked;
       options[5] = getId('_wmeSpeedsUnverifed').checked;
+      options[6] = getId('_wmeSpeedsInvertNonDrivable').checked;
 
       localStorage.WMESpeedsScript = JSON.stringify(options);
     }
@@ -595,6 +619,7 @@ function initialiseSpeedsHighlights() {
   getId('_wmeSpeedsOtherDrivable').onclick = highlightSpeedsSegments;
   getId('_wmeSpeedsTransparentColors').onclick = highlightSpeedsSegments;
   getId('_wmeSpeedsUnverifed').onclick = highlightSpeedsSegments;
+  getId('_wmeSpeedsInvertNonDrivable').onclick = highlightSpeedsSegments;
 
   //initial highlight
   highlightSpeedsSegments();
