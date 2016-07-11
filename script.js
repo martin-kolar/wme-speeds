@@ -4,11 +4,12 @@
 // @author              Martin Kolář (based from WME Color Highlights v. 1.98)
 // @description         Adds colours to road segments to show their speeds
 // @include             https://editor-beta.waze.com/*
+// @include             https://beta.waze.com/*
 // @include             https://www.waze.com/editor/*
 // @include             https://www.waze.com/*/editor/*
 // @exclude             https://www.waze.com/user/*editor/*
 // @exclude             https://www.waze.com/*/user/*editor/*
-// @version             0.4.3
+// @version             0.4.3.1
 // @grant               none
 // @contributor         FZ69617
 // ==/UserScript==
@@ -23,7 +24,7 @@
 
 // global variables
 
-var wmeSpeedsVersion = '0.4.3';
+var wmeSpeedsVersion = '0.4.3.1';
 var wmeSpeedsInit = false;
 var wmeSpeedsColors =    ['#ff0000', '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
 var wmeSpeedsColorsMph = ['#ff0000', '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#000000'];
