@@ -9,7 +9,7 @@
 // @include             https://www.waze.com/*/editor/*
 // @exclude             https://www.waze.com/user/*editor/*
 // @exclude             https://www.waze.com/*/user/*editor/*
-// @version             0.4.3.2
+// @version             0.4.3.3
 // @grant               none
 // @contributor         FZ69617
 // ==/UserScript==
@@ -24,7 +24,7 @@
 
 // global variables
 
-var wmeSpeedsVersion = '0.4.3.2';
+var wmeSpeedsVersion = '0.4.3.3';
 var wmeSpeedsInit = false;
 var wmeSpeedsColors =    ['#ff0000', '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
 var wmeSpeedsColorsMph = ['#ff0000', '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#000000'];
@@ -549,7 +549,41 @@ function initialiseSpeedsHighlights() {
   // I18n.translations.en.layers.name["__DrawSegmentSpeeds"] = fe_t('scriptName');
   Waze.map.addLayer(wmeSpeedsLayer);
 
-  if (localStorage.DrawSegmentSpeeds) {
+  var roadGroupSelector = document.getElementById('layer-switcher-group_road');
+
+  if (roadGroupSelector !== null) {
+    var roadGroup = roadGroupSelector.parentNode.parentNode.querySelector('.children');
+    var toggler = document.createElement('li');
+    var togglerContainer = document.createElement('div');
+    var checkbox = document.createElement('input');
+    var label = document.createElement('label');
+    var labelText = document.createElement('span');
+
+    togglerContainer.className = 'controls-container toggler';
+    checkbox.type = 'checkbox';
+    checkbox.id = 'layer-switcher-item_speeds';
+    checkbox.className = 'toggle';
+    checkbox.disabled = ! roadGroupSelector.checked;
+    togglerContainer.appendChild(checkbox);
+    label.htmlFor = checkbox.id;
+    labelText.className = 'label-text';
+    labelText.appendChild(document.createTextNode(fe_t('layerName')));
+    label.appendChild(labelText);
+    togglerContainer.appendChild(label);
+    toggler.appendChild(togglerContainer);
+    roadGroup.appendChild(toggler);
+
+    checkbox.addEventListener('click', function(e) {
+      wmeSpeedsLayer.setVisibility(e.target.checked);
+    });
+
+    roadGroupSelector.addEventListener('click', function(e) {
+      wmeSpeedsLayer.setVisibility(e.target.checked & checkbox.checked);
+      checkbox.disabled = !e.target.checked;
+    });
+  }
+
+  if (localStorage.DrawSegmentSpeeds === 'true') {
     wmeSpeedsLayer.setVisibility(localStorage.DrawSegmentSpeeds === 'true');
   } else {
     wmeSpeedsLayer.setVisibility(true);
