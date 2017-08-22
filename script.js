@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name                WME Speeds
+// @name                WME Speedlimits
 // @namespace           https://greasyfork.org/cs/scripts/12402-wme-speeds
 // @author              Martin Kolář (based from WME Color Highlights v. 1.98)
 // @description         Adds colours to road segments to show their speeds
