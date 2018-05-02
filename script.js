@@ -9,7 +9,7 @@
 // @include             https://www.waze.com/*/editor*
 // @exclude             https://www.waze.com/user/*editor*
 // @exclude             https://www.waze.com/*/user/*editor*
-// @version             0.4.3.5
+// @version             0.4.3.6
 // @grant               none
 // @contributor         FZ69617
 // ==/UserScript==
@@ -24,7 +24,7 @@
 
 // global variables
 
-var wmeSpeedsVersion = '0.4.3.5';
+var wmeSpeedsVersion = '0.4.3.6';
 var wmeSpeedsInit = false;
 var wmeSpeedsColors =    ['#ff0000', '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
 var wmeSpeedsColorsMph = ['#ff0000', '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#000000'];
@@ -181,8 +181,8 @@ function highlightSpeedsSegments() {
 
     var features = [];
 
-    for (var seg in Waze.model.segments.objects) {
-      var segment = Waze.model.segments.get(seg);
+    for (var seg in W.model.segments.objects) {
+      var segment = W.model.segments.get(seg);
 
       if (!isOnScreen(segment)) {
         continue;
@@ -501,7 +501,7 @@ function fe_t(name, params) { //  function for translation
 }
 
 function isOnScreen(segment) {
-  var e = Waze.map.getExtent();
+  var e = W.map.getExtent();
   var eg = e.toGeometry();
   return eg.intersects(segment.geometry);
 }
@@ -528,7 +528,7 @@ function initialiseSpeedsHighlights() {
     return ;
   }
 
-  if (!Waze.map) {
+  if (!W.map) {
       window.console.log("WME Speeds: waiting for WME...");
       setTimeout(initialiseSpeedsHighlights, 555);
       return ;
@@ -556,7 +556,7 @@ function initialiseSpeedsHighlights() {
   });
 
   // I18n.translations.en.layers.name["__DrawSegmentSpeeds"] = fe_t('scriptName');
-  Waze.map.addLayer(wmeSpeedsLayer);
+  W.map.addLayer(wmeSpeedsLayer);
 
   var roadGroupSelector = document.getElementById('layer-switcher-group_road');
 
@@ -614,24 +614,24 @@ function initialiseSpeedsHighlights() {
     }
   });
 
-  if (Waze.model.isImperial) {
+  if (W.model.isImperial) {
     wmeSpeedsMiles = true;
   }
 
   // register some events...
-  Waze.map.events.register("zoomend", null, highlightSpeedsSegments);
-  Waze.map.events.register("changelayer", null, changeLayer);
+  W.map.events.register("zoomend", null, highlightSpeedsSegments);
+  W.map.events.register("changelayer", null, changeLayer);
 
-  //Waze.map.events.register("movestart", null, highlightSpeedsSegments);
-  //Waze.map.events.register("move", null, highlightSpeedsSegments);
-  Waze.map.events.register("moveend", null, highlightSpeedsSegments);
+  //W.map.events.register("movestart", null, highlightSpeedsSegments);
+  //W.map.events.register("move", null, highlightSpeedsSegments);
+  W.map.events.register("moveend", null, highlightSpeedsSegments);
 
-  Waze.map.baseLayer.events.register("loadend", null, highlightSpeedsSegments);
+  W.map.baseLayer.events.register("loadend", null, highlightSpeedsSegments);
 
-  Waze.model.events.register("mergeend", null, highlightSpeedsSegments);
+  W.model.events.register("mergeend", null, highlightSpeedsSegments);
 
-  //Waze.vent.on("operationPending", highlightSpeedsSegments);
-  Waze.vent.on("operationDone", highlightSpeedsSegments);
+  //W.vent.on("operationPending", highlightSpeedsSegments);
+  W.vent.on("operationDone", highlightSpeedsSegments);
 
   wmeSpeedsInit = true;
 
