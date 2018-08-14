@@ -9,7 +9,7 @@
 // @include             https://www.waze.com/*/editor*
 // @exclude             https://www.waze.com/user/*editor*
 // @exclude             https://www.waze.com/*/user/*editor*
-// @version             0.4.3.6
+// @version             0.4.3.7
 // @grant               none
 // @contributor         FZ69617
 // ==/UserScript==
@@ -24,7 +24,7 @@
 
 // global variables
 
-var wmeSpeedsVersion = '0.4.3.6';
+var wmeSpeedsVersion = '0.4.3.7';
 var wmeSpeedsInit = false;
 var wmeSpeedsColors =    ['#ff0000', '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
 var wmeSpeedsColorsMph = ['#ff0000', '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#000000'];
@@ -182,7 +182,7 @@ function highlightSpeedsSegments() {
     var features = [];
 
     for (var seg in W.model.segments.objects) {
-      var segment = W.model.segments.get(seg);
+      var segment = W.model.segments.getObjectById(seg);
 
       if (!isOnScreen(segment)) {
         continue;
@@ -522,7 +522,7 @@ function initialiseSpeedsHighlights() {
 
   // init shortcuts
 
-  if (typeof(Waze) === 'undefined') {
+  if (typeof(W) === 'undefined') {
     console.log("WME Speeds: Waze : NOK");
     setTimeout(initialiseSpeedsHighlights, 500);
     return ;
