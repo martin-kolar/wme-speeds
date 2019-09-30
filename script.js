@@ -9,7 +9,7 @@
 // @include             https://www.waze.com/*/editor*
 // @exclude             https://www.waze.com/user/*editor*
 // @exclude             https://www.waze.com/*/user/*editor*
-// @version             0.4.3.7
+// @version             0.4.4
 // @grant               none
 // @contributor         FZ69617
 // ==/UserScript==
@@ -24,7 +24,7 @@
 
 // global variables
 
-var wmeSpeedsVersion = '0.4.3.7';
+var wmeSpeedsVersion = '0.4.4';
 var wmeSpeedsInit = false;
 var wmeSpeedsColors =    ['#ff0000', '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
 var wmeSpeedsColorsMph = ['#ff0000', '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#000000'];
@@ -561,14 +561,14 @@ function initialiseSpeedsHighlights() {
   var roadGroupSelector = document.getElementById('layer-switcher-group_road');
 
   if (roadGroupSelector !== null) {
-    var roadGroup = roadGroupSelector.parentNode.parentNode.querySelector('.children');
+    var roadGroup = roadGroupSelector.parentNode.parentNode.parentNode.parentNode.getElementsByTagName("UL")[0];
     var toggler = document.createElement('li');
     var togglerContainer = document.createElement('div');
     var checkbox = document.createElement('input');
     var label = document.createElement('label');
     var labelText = document.createElement('span');
 
-    togglerContainer.className = 'controls-container toggler';
+    togglerContainer.className = 'wz-checkbox';
     checkbox.type = 'checkbox';
     checkbox.id = 'layer-switcher-item_speeds';
     checkbox.className = 'toggle';
