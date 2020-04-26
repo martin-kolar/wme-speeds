@@ -9,7 +9,7 @@
 // @include             https://www.waze.com/*/editor*
 // @exclude             https://www.waze.com/user/*editor*
 // @exclude             https://www.waze.com/*/user/*editor*
-// @version             0.4.6
+// @version             0.4.7
 // @grant               none
 // @contributor         FZ69617
 // ==/UserScript==
@@ -24,7 +24,7 @@
 
 // global variables
 
-var wmeSpeedsVersion = '0.4.6';
+var wmeSpeedsVersion = '0.4.7';
 var wmeSpeedsInit = false;
 var wmeSpeedsColors =    ['#ff0000', '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
 var wmeSpeedsColorsMph = ['#ff0000', '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#000000'];
@@ -561,30 +561,20 @@ function initialiseSpeedsHighlights() {
   var roadGroupSelector = document.getElementById('layer-switcher-group_road');
 
   if (roadGroupSelector !== null) {
-    var roadGroup = roadGroupSelector.parentNode.parentNode.parentNode.parentNode.getElementsByTagName("UL")[0];
+    var roadGroup = roadGroupSelector.parentNode.parentNode.getElementsByTagName("UL")[0];
     var toggler = document.createElement('li');
-    var togglerContainer = document.createElement('div');
-    var checkbox = document.createElement('input');
-    var label = document.createElement('label');
-    var labelText = document.createElement('span');
+    var checkbox = document.createElement("wz-checkbox");
 
-    togglerContainer.className = 'wz-checkbox';
-    checkbox.type = 'checkbox';
     checkbox.id = 'layer-switcher-item_speeds';
-    checkbox.className = 'toggle';
+    checkbox.className = 'hydrated';
     checkbox.disabled = !roadGroupSelector.checked;
 
     if (localStorage.DrawSegmentSpeeds === 'true') {
       checkbox.checked = 'checked';
     }
 
-    togglerContainer.appendChild(checkbox);
-    label.htmlFor = checkbox.id;
-    labelText.className = 'label-text';
-    labelText.appendChild(document.createTextNode(fe_t('layerName')));
-    label.appendChild(labelText);
-    togglerContainer.appendChild(label);
-    toggler.appendChild(togglerContainer);
+    checkbox.appendChild(document.createTextNode(fe_t('layerName')));
+    toggler.appendChild(checkbox);
     roadGroup.appendChild(toggler);
 
     checkbox.addEventListener('click', function(e) {
