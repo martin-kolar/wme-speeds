@@ -9,7 +9,7 @@
 // @include             https://www.waze.com/*/editor*
 // @exclude             https://www.waze.com/user/*editor*
 // @exclude             https://www.waze.com/*/user/*editor*
-// @version             0.4.7
+// @version             0.4.8
 // @grant               none
 // @contributor         FZ69617
 // ==/UserScript==
@@ -23,7 +23,7 @@
 
   // global variables
 
-  var wmeSpeedsVersion = '0.4.7';
+  var wmeSpeedsVersion = '0.4.8';
   var wmeSpeedsInit = false;
   var wmeSpeedsColors = ['#ff0000', '#321325', '#540804', '#BA1200', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55'];
   var wmeSpeedsColorsMph = ['#ff0000', '#321325', '#702632', '#540804', '#A00027', '#BA1200', '#F15872', '#FA4A48', '#F39C6B', '#A7D3A6', '#ADD2C2', '#CFE795', '#F7EF81', '#BDC4A7', '#95AFBA', '#3F7CAC', '#0A369D', '#001C55', '#000000'];
@@ -610,12 +610,12 @@
     }
 
     // register some events...
-    W.map.getMapEventsListener().register('zoomend', null, highlightSpeedsSegments);
-    W.map.getMapEventsListener().register('changelayer', null, changeLayer);
+    W.map.olMap.events.register('zoomend', null, highlightSpeedsSegments);
+    W.map.olMap.events.register('changelayer', null, changeLayer);
 
     //W.map.events.register("movestart", null, highlightSpeedsSegments);
     //W.map.events.register("move", null, highlightSpeedsSegments);
-    W.map.getMapEventsListener().register('moveend', null, highlightSpeedsSegments);
+    W.map.olMap.events.register('moveend', null, highlightSpeedsSegments);
 
     window.addEventListener('load', highlightSpeedsSegments);
 
