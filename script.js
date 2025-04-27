@@ -3,13 +3,11 @@
 // @namespace           https://greasyfork.org/cs/scripts/12402-wme-speeds
 // @author              Martin Kolář (based from WME Color Highlights v. 1.98)
 // @description         Adds colours to road segments to show their speeds
-// @match       https://*.waze.com/*editor*
-// @version             0.4.10
+// @match               https://*.waze.com/*editor*
+// @version             0.4.11
 // @icon                data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowNjg3OEY2RjhFMEIxMUU1OTU1MUU5MjA0ODlFQjA1MCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowNjg3OEY3MDhFMEIxMUU1OTU1MUU5MjA0ODlFQjA1MCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjA2ODc4RjZEOEUwQjExRTU5NTUxRTkyMDQ4OUVCMDUwIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjA2ODc4RjZFOEUwQjExRTU5NTUxRTkyMDQ4OUVCMDUwIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+Dhzo6gAABIFJREFUeNqsV2tMU1kQnsWiVhG6Irrro1Br9IcJoMFH1j+AURLEB2CMGBWNIIgmZhMX/W+IupsYV+NzXR9IEE00+KpBjfiE4ApWs/5YHhbqA4EFWhArwg9nTs+9PffS1kthki/33plzZubcM3Nmju7aSNBKIYhliARELMKECOMyJ8KGsCLKEbcQn7Qo/UGDAzMQuxEZiLEane1BXEQcQNT7GxjkRzYasR/xGpE1COPAx2bxuQe4rkE5YEZU8pWPhMCJ5uZzXTO8DdB54c1FWBCT1IKwuAUweVUaRCQkgt5oBF1oKOP3d3WBy26HtvL78KH0KjifV6mnUsw8QSQjavzFAHlZgYgQmaFz4mB63g4wbszUtGx74XmwHT8Kzpp/1KI2xC9iXIgO6PmvihFnGDdlQ+zJUwH9f2tuDtjPDpj7CrEQ4aKPERkjZEEBIl0RCDt3QfThIwEHwE8py6G/uwc6qypENm1tMOKe6AAFXRF9yyvfvBWi/zwMQ6WJS5aC630zOK3VIns+T9MOKQv2cK/cwTZ3HsSeOAnDRaSLdAoUzG2yLBjHDxmZTLl5CgVXrpbCqdNnBigus1yX3588rYDii5eg4Y0NzNNNsHJFCiQtXeLRuW07WLM3idPXIn4N4qkxVkw1Y6ZiINTW1fldIRnfW7CfGSei58FDR6Dszl1PMGMGkW7VYZVMDiwWuVNS030aohWLkOjYcfd2rVu7hvHpSXS+sAi+o3sxORAtcibEJwww/ODhY59O/VdbC+0dnew9MTGePVOWJbMn8UnuR3d0EM8AmcaYTD6NJSWvgLwdO1lMuFwsjaGxsUmWT5s6lT3Dw8fLPFHuRbeZgjBUcTaHhChGvH33TvFN+0t4Xl0N+wr2Diob1LrJtu57k2hV0n7Tqi23y1hG1Lx4yYJvqERb0CUy+j/57iP0ej2kp63yFP2eHoiKipS/29s7FE8iUe5Fdxc50CByPttsihGkTFQophYpnzVzJoSP/5F937xl4UH7yB0LyCe5L91kW8eLg5yg/z8oB0NcnDyC9ppyWk2UapLyzI3r2ZjikssMEuVty1HMId3qwkS1YAy+rJY4X7G2R23J8rjY8AZ6e3uh+WOLu1mYEwMZaDw9LdVTw81mmBgxAVpb26Cz08FOws2ZGyAxIV5h7d/8XfDlgyKo/6ByTEdxs3gaxv51TnPt10r2C4VgzVLo/EwFk2KgG1EiSqiZGG7yopOqYbdUDan57JMk1MlQMzFcRLqc1c9EVh9vVuV+oIP3/YtkJ7B+UzNB9Xwo9Dr/N2g8MSCIDyIuqTuip4jlYjNKnQw1E9TZBLpyL8Yp6zZIf1x0oJ+3SYoLCP2JjxYLBI0aBWExMdoDLjcbWm/f8NaUJiFa/N2MfLblhnkL4eeVqe62PDISgg0G94Y6HOBqamJtefP1UnA8q/TmV4uWtlxsz6+oS/UQ6BVveOu13ozq+en4u5gdAVAf17HA1x3R393wC7+azUac5geHVqJm4W8+dzfXFfDtWLyep6iu5wYuc6iu5ze1Xs+/CTAA2tuMX1dHe2oAAAAASUVORK5CYII
 // @contributor         FZ69617
 
-// @downloadURL https://update.greasyfork.org/scripts/12402/WME%20Speedlimits.user.js
-// @updateURL https://update.greasyfork.org/scripts/12402/WME%20Speedlimits.meta.js
 // ==/UserScript==
 
 /*jshint eqnull:true, eqeqeq:true, freeze:true, funcscope:true, maxerr:1000, curly:true, latedef:true, unused:strict, noarg:true, loopfunc:true, undef:true */
@@ -426,6 +424,7 @@
     tabLabel.title = 'WME Speeds';
     tabLabel.id = "sidepanel-wme-speeds";
     tabPane.appendChild(addon);
+    return tabPane;
   }
 
   /* helper function */
@@ -501,7 +500,7 @@
   }
 
   /* =========================================================================== */
-  function initialiseSpeedsHighlights() {
+  async function initialiseSpeedsHighlights() {
 
     if (wmeSpeedsTranslation[I18n.locale] != null) {
       wmeSpeedsLanguage = I18n.locale;
@@ -566,24 +565,8 @@
       wmeSpeedsMiles = true;
     }
 
-    // register some events...
-    W.map.events.register('zoomend', null, highlightSpeedsSegments);
-    W.map.events.register('changelayer', null, changeLayer);
-
-    //W.map.events.register("movestart", null, highlightSpeedsSegments);
-    //W.map.events.register("move", null, highlightSpeedsSegments);
-    W.map.events.register('moveend', null, highlightSpeedsSegments);
-
-    window.addEventListener('load', highlightSpeedsSegments);
-
-    // W.map.baseLayer.events.register("loadend", null, highlightSpeedsSegments);
-
-    W.model.events.register('mergeend', null, highlightSpeedsSegments);
-
-    //W.vent.on("operationPending", highlightSpeedsSegments);
-    W.app.layout.model.on('operationDone', highlightSpeedsSegments);
-
-    makeSpeedsTab();
+    var tabPane = makeSpeedsTab();
+    await W.userscripts.waitForElementConnected(tabPane);
 
     // restore saved settings
     if (localStorage.WMESpeedsScript) {
@@ -619,7 +602,25 @@
         localStorage.WMESpeedsScript = JSON.stringify(options);
       }
     };
-    //  save options
+
+    // register some events...
+    W.map.events.register('zoomend', null, highlightSpeedsSegments);
+    W.map.events.register('changelayer', null, changeLayer);
+
+    //W.map.events.register("movestart", null, highlightSpeedsSegments);
+    //W.map.events.register("move", null, highlightSpeedsSegments);
+    W.map.events.register('moveend', null, highlightSpeedsSegments);
+
+    window.addEventListener('load', highlightSpeedsSegments);
+
+    //W.map.baseLayer.events.register("loadend", null, highlightSpeedsSegments);
+
+    W.model.events.register('mergeend', null, highlightSpeedsSegments);
+
+    //W.vent.on("operationPending", highlightSpeedsSegments);
+    W.app.layout.model.on('operationDone', highlightSpeedsSegments);
+
+    // save options
     window.addEventListener('beforeunload', saveWmeSpeedsOptions, false);
 
     getId('_wmeSpeedsInvert').onclick = highlightSpeedsSegments;
@@ -629,7 +630,7 @@
     getId('_wmeSpeedsUnverifed').onclick = highlightSpeedsSegments;
     getId('_wmeSpeedsInvertNonDrivable').onclick = highlightSpeedsSegments;
 
-    //initial highlight
+    // initial highlight
     highlightSpeedsSegments();
   }
 
