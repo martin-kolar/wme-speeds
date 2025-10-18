@@ -1,5 +1,5 @@
 {
-  "version": "1.0.2",
+  "version": "1.0.3",
   "name": "wme-sdk-example",
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.1.0",

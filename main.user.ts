@@ -59,7 +59,7 @@ function initScript() {
     })
   }
 
-  function getStylesRules() {
+  function getStylesRules(): { predicate: (featureProperties: any) => boolean, style: any }[] {
     let rules = [];
 
     rules.push({
@@ -91,8 +91,8 @@ function initScript() {
         predicate: (featureProperties: any) => !!featureProperties[`speedFwd${index}`],
         style: {
           strokeColor: color,
-          strokeDashstyle: "0 20 20 0",
-          strokeLinecap: "butt",
+          strokeDashstyle: '0 20 20 0',
+          strokeLinecap: 'butt',
           strokeWidth: 8,
           strokeOpacity: _config.wmeSpeedsTransparentColors ? .75 : 1
         },
@@ -102,12 +102,45 @@ function initScript() {
         predicate: (featureProperties: any) => !!featureProperties[`speedRev${index}`],
         style: {
           strokeColor: color,
-          strokeDashstyle: "10 0 10 20",
-          strokeLinecap: "butt",
+          strokeDashstyle: '20 20',
+          strokeLinecap: 'butt',
           strokeWidth: 8,
           strokeOpacity: _config.wmeSpeedsTransparentColors ? .75 : 1
         },
       })
+    })
+
+    rules.push({
+      predicate: (featureProperties: any) => !!featureProperties.nonExactSpeed,
+      style: {
+        strokeColor: '#ffffff',
+        strokeDashstyle: '2 8 2 8',
+        strokeLinecap: 'butt',
+        strokeWidth: 8,
+        strokeOpacity: _config.wmeSpeedsTransparentColors ? .75 : 1
+      },
+    })
+
+    rules.push({
+      predicate: (featureProperties: any) => !!featureProperties.nonExactSpeedFwd,
+      style: {
+        strokeColor: '#ffffff',
+        strokeDashstyle: '0 20 2 8 2 8 0 0',
+        strokeLinecap: 'butt',
+        strokeWidth: 8,
+        strokeOpacity: _config.wmeSpeedsTransparentColors ? .75 : 1
+      },
+    })
+
+    rules.push({
+      predicate: (featureProperties: any) => !!featureProperties.nonExactSpeedRev,
+      style: {
+        strokeColor: '#ffffff',
+        strokeDashstyle: '2 8 2 8 0 20',
+        strokeLinecap: 'butt',
+        strokeWidth: 8,
+        strokeOpacity: _config.wmeSpeedsTransparentColors ? .75 : 1
+      },
     })
 
     return rules;
@@ -264,6 +297,9 @@ function initScript() {
         ${speedsTemplate()}
 
         <p style="font-size:12px;">
+          ${getTranslation('dashedHint')}
+        </p>
+        <p style="font-size:12px;">
           ${getTranslation('forumLink')}
           <br>
           ${getTranslation('author')}
@@ -403,15 +439,33 @@ function initScript() {
           drawSegment(segment, {
             [`speed${fwdSpeed.direction ? fwdSpeed.index : revSpeed.index}`]: 1
           });
+
+          if ((!fwdSpeed.exact && fwdSpeed.direction && fwdSpeed.value > 0) || (!revSpeed.exact && revSpeed.direction && revSpeed.value > 0)) {
+            drawSegment(segment, {
+              nonExactSpeed: 1
+            });
+          }
         }
         else {
           drawSegment(segment, {
             [`speedFwd${fwdSpeed.index}`]: 1
           });
 
+          if (!fwdSpeed.exact && fwdSpeed.value > 0) {
+            drawSegment(segment, {
+              nonExactSpeedFwd: 1
+            });
+          }
+
           drawSegment(segment, {
             [`speedRev${revSpeed.index}`]: 1
           });
+
+          if (!revSpeed.exact && revSpeed.value > 0) {
+            drawSegment(segment, {
+              nonExactSpeedRev: 1
+            });
+          }
         }
       })
     }

@@ -23,6 +23,7 @@ const i18n: Record<LocaleCode, Translations> = {
       //'transparentColorsContent': 'Průsvitné barvy',
       //'unverifiedSegmentsTitle': 'Nepotvrzené rychlosti na segmentech',
       //'unverifiedSegmentsContent': 'Zvýrazní nepotvrzené rychlosti na segmentech'
+      'dashedHint': 'Bíle přerušovaná barva znamená, že rychlostní limit není kulaté číslo.'
     },
     sk: {
       'tabName': 'R',
@@ -66,6 +67,7 @@ const i18n: Record<LocaleCode, Translations> = {
       //'transparentColorsContent': 'Make speed\'s colors transparent',
       //'unverifiedSegmentsTitle': 'Highlight unverified segments',
       //'unverifiedSegmentsContent': 'Highlight unverified segments',
+      'dashedHint': 'White dashed styles mean that the speed limit is not round number.'
     },
     he: {
       'tabName': 'S',
