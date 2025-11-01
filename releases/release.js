@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        WME Speeds
 // @namespace   https://greasyfork.org/cs/scripts/12402-wme-speeds
-// @version     1.0.4
+// @version     1.0.5
 // @description Adds colors to road segments to show their speeds
 // @author      Martin Kolář
 // @match       https://www.waze.com/editor*
@@ -11,7 +11,9 @@
 // @exclude     https://www.waze.com/user/editor*
 // @exclude     https://beta.waze.com/user/editor*
 // @icon        data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMzMgMjMzIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxjaXJjbGUgc3Ryb2tlPSJyZWQiIHN0cm9rZS13aWR0aD0iMjUiIGZpbGw9IiNmZmYiIGN4PSIxMTYuNSIgY3k9IjExNi41IiByPSIxMDQiLz48ZyBmaWxsPSIjMDAwIiBmaWxsLXJ1bGU9Im5vbnplcm8iPjxwYXRoIGQ9Im00Ni40IDEzNy4yIDE5LjEtMnEuOCA2LjYgNC45IDEwLjNhMTMgMTMgMCAwIDAgMTkuNC0xcTQuMi01IDQuMi0xNC44IDAtOS4yLTQuMS0xMy44LTQuMi00LjYtMTAuOC00LjYtOC4zIDAtMTQuOCA3LjNsLTE1LjYtMi4zIDkuOC01Mi4xaDUwLjh2MThINzMuMWwtMyAxN2EyOSAyOSAwIDAgMSAxMy4xLTMuM3ExMi44IDAgMjEuNyA5LjN0OC45IDI0LjJxMCAxMi4zLTcuMiAyMmEzMiAzMiAwIDAgMS0yNy4yIDEzLjNxLTEzLjggMC0yMi42LTcuNC04LjctNy41LTEwLjQtMjBNMTU2LjQgNjIuNHExNC41IDAgMjIuOCAxMC40UTE4OSA4NSAxODkgMTEzLjZ0LTkuOSA0MC45YTI3IDI3IDAgMCAxLTIyLjcgMTAuMnEtMTQuNiAwLTIzLjYtMTEuMi05LTExLjMtOS00MC4xIDAtMjguMyAxMC00MC44IDgtMTAuMiAyMi42LTEwLjJtMCAxNS45cS0zLjUgMC02LjIgMi4ydC00LjIgOHEtMiA3LjUtMiAyNSAwIDE3LjggMS44IDI0LjMgMS43IDYuNiA0LjQgOC44YTEwIDEwIDAgMCAwIDYuMiAyLjJxMy41IDAgNi4yLTIuMnQ0LjMtOHEyLTcuNSAyLTI1YTEwOSAxMDkgMCAwIDAtMS44LTI0LjNxLTEuOC02LjYtNC41LTguOGExMCAxMCAwIDAgMC02LjItMi4yIi8+PC9nPjwvZz48L3N2Zz4=
-// @grant       none
+// @grant       GM_xmlhttpRequest
+// @grant       unsafeWindow
+// @require     https://greasyfork.org/scripts/24851-wazewrap/code/WazeWrap.js
 // ==/UserScript==
 
 (function () {
@@ -28,7 +30,8 @@
             hideWithoutSpeeds: 'Skrýt segmenty bez rychlostí',
             noSpeedsSegmentsOtherTitle: 'Skrýt rychlosti na nedůležitých segmentech',
             transparentColorsTitle: 'Průsvitné barvy',
-            dashedHint: 'Bíle přerušovaná barva znamená, že rychlostní limit není kulaté číslo.'
+            dashedHint: 'Bíle přerušovaná barva znamená, že rychlostní limit není kulaté číslo.',
+            forumUrl: 'https://www.waze.com/forum/viewtopic.php?f=22&t=166406'
         },
         sk: {
             scriptName: 'WME Rýchlosti',
@@ -40,7 +43,8 @@
             hideWithoutSpeeds: 'Skryť úseky bez rýchlostí',
             noSpeedsSegmentsOtherTitle: 'Skryť rýchlosti na iných jazdných úsekoch bez rýchlostí',
             transparentColorsTitle: 'Priehľadná farba',
-            dashedHint: 'Biele prerušované čiary znamenajú, že rýchlostný limit nie je zaokrúhlené číslo.'
+            dashedHint: 'Biele prerušované čiary znamenajú, že rýchlostný limit nie je zaokrúhlené číslo.',
+            forumUrl: 'https://www.waze.com/forum/viewtopic.php?f=22&t=166406'
         },
         en: {
             scriptName: 'WME Speeds',
@@ -52,7 +56,8 @@
             hideWithoutSpeeds: 'Hide segments without speeds',
             noSpeedsSegmentsOtherTitle: 'Hide speeds on other-drivable segments without speeds',
             transparentColorsTitle: 'Transparent color',
-            dashedHint: 'White dashed styles mean that the speed limit is not round number.'
+            dashedHint: 'White dashed styles mean that the speed limit is not round number.',
+            forumUrl: 'https://www.waze.com/forum/viewtopic.php?f=819&t=166497'
         },
         he: {
             scriptName: 'מהירות WME',
@@ -64,7 +69,8 @@
             hideWithoutSpeeds: 'הסתר מקטעים ללא מהירויות',
             noSpeedsSegmentsOtherTitle: 'הסתר מהירויות במקטעים אחרים ללא נתוני מהירות',
             transparentColorsTitle: 'צבע שקוף',
-            dashedHint: 'קו לבן מקווקו מציין שהמהירות אינה מספר עגול.'
+            dashedHint: 'קו לבן מקווקו מציין שהמהירות אינה מספר עגול.',
+            forumUrl: 'https://www.waze.com/forum/viewtopic.php?f=819&t=166497'
         },
         pl: {
             scriptName: 'WME Prędkości',
@@ -76,19 +82,22 @@
             hideWithoutSpeeds: 'Ukryj odcinki bez prędkości',
             noSpeedsSegmentsOtherTitle: 'Ukryj prędkości na innych przejezdnych odcinkach bez prędkości',
             transparentColorsTitle: 'Przezroczysty kolor',
-            dashedHint: 'Białe linie przerywane oznaczają, że ograniczenie prędkości nie jest liczbą zaokrągloną.'
+            dashedHint: 'Białe linie przerywane oznaczają, że ograniczenie prędkości nie jest liczbą zaokrągloną.',
+            forumUrl: 'https://www.waze.com/forum/viewtopic.php?f=819&t=166497'
         }
     };
     function getTranslations(localeCode) {
         return i18n[localeCode] || i18n['en'];
     }
 
-    window.SDK_INITIALIZED.then(initScript);
+    unsafeWindow.SDK_INITIALIZED.then(initScript);
     function initScript() {
-        if (!window.getWmeSdk) {
+        const UPDATE_NOTES = 'Implement WazeWrap for update notifications.<br><br>';
+        const GF_LINK = 'https://update.greasyfork.org/scripts/12402/WME%20Speeds.user.js';
+        if (!unsafeWindow.getWmeSdk) {
             throw new Error("SDK not available");
         }
-        const wmeSDK = window.getWmeSdk({
+        const wmeSDK = unsafeWindow.getWmeSdk({
             scriptId: 'wme-speedlimits',
             scriptName: 'WME Speedlimits'
         });
@@ -488,12 +497,38 @@
                 localStorage.WMESpeedsScript = JSON.stringify(options);
             }
         }
+        var tries = 0;
+        function checkWazeWrap() {
+            if (typeof WazeWrap !== 'undefined' && WazeWrap.Ready) {
+                console.log("Checking for script updates...");
+                WazeWrap.Interface.ShowScriptUpdate(GM_info.script.name, GM_info.script.version, UPDATE_NOTES, GF_LINK, getTranslation('forumUrl'));
+                try {
+                    let updateMonitor = new WazeWrap.Alerts.ScriptUpdateMonitor(GM_info.script.name, GM_info.script.version, GF_LINK, GM_xmlhttpRequest);
+                    updateMonitor.start();
+                }
+                catch (ex) {
+                    console.error(ex);
+                }
+            }
+            else {
+                if (tries == 0) {
+                    console.log("Waiting for WazeWrap...");
+                }
+                else if (tries >= 60) {
+                    console.warn("WazeWrap loading failed after 60 tries. Script updates will not be detected.");
+                    return;
+                }
+                tries++;
+                setTimeout(checkWazeWrap, 500);
+            }
+        }
         function init() {
             _config.useMph = wmeSDK.Settings.getUserSettings().isImperial ?? false;
             addScriptTab();
             setKeyboardShortcuts();
             addLayer();
             addEventListeners();
+            checkWazeWrap();
         }
         init();
     }
