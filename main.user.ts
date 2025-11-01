@@ -2,13 +2,19 @@ import { WmeSDK } from "wme-sdk-typings";
 import { getTranslations } from "./config.js";
 import type { Segment } from "wme-sdk-typings";
 
-window.SDK_INITIALIZED.then(initScript)
+declare var WazeWrap: any;
+
+unsafeWindow.SDK_INITIALIZED.then(initScript)
 
 function initScript() {
-  if (!window.getWmeSdk) {
+  const UPDATE_NOTES = 'Implement WazeWrap for update notifications.<br><br>';
+  const GF_LINK = 'https://update.greasyfork.org/scripts/12402/WME%20Speeds.user.js';
+
+  if (!unsafeWindow.getWmeSdk) {
     throw new Error("SDK not available")
   }
-  const wmeSDK: WmeSDK = window.getWmeSdk(
+
+  const wmeSDK: WmeSDK = unsafeWindow.getWmeSdk(
     {
       scriptId: 'wme-speedlimits',
       scriptName: 'WME Speedlimits'
@@ -27,7 +33,6 @@ function initScript() {
     useMph: false,
     ratioKmphToMph: 0.621371192,
     speedsForTab: null as string[] | null,
-    //wmeSpeedsInvertSpeedsColors: null as boolean | null,
     invertColors: null as boolean | null,
     otherDrivable: null as boolean | null,
     transparent: null as boolean | null,
@@ -492,12 +497,37 @@ function initScript() {
     }
   }
 
+  var tries = 0
+
+  function checkWazeWrap(): void {
+    if (typeof WazeWrap !== 'undefined' && WazeWrap.Ready) {
+        console.log("Checking for script updates...");
+        WazeWrap.Interface.ShowScriptUpdate(GM_info.script.name, GM_info.script.version, UPDATE_NOTES, GF_LINK, getTranslation('forumUrl'));
+      try {
+        let updateMonitor = new WazeWrap.Alerts.ScriptUpdateMonitor(GM_info.script.name, GM_info.script.version, GF_LINK, GM_xmlhttpRequest);
+        updateMonitor.start();
+      } catch (ex) {
+        console.error(ex);
+      }
+    } else {
+      if (tries == 0) {
+        console.log("Waiting for WazeWrap...");
+      } else if (tries >= 60) {
+        console.warn("WazeWrap loading failed after 60 tries. Script updates will not be detected.");
+      return;
+      }
+      tries++;
+      setTimeout(checkWazeWrap, 500);
+    }
+  }
+
   function init(): void {
     _config.useMph = wmeSDK.Settings.getUserSettings().isImperial ?? false
     addScriptTab()
     setKeyboardShortcuts()
     addLayer()
     addEventListeners()
+    checkWazeWrap()
   }
 
   init()

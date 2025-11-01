@@ -12,7 +12,8 @@ const i18n: Record<LocaleCode, Translations> = {
     hideWithoutSpeeds: 'Skrýt segmenty bez rychlostí',
     noSpeedsSegmentsOtherTitle: 'Skrýt rychlosti na nedůležitých segmentech',
     transparentColorsTitle: 'Průsvitné barvy',
-    dashedHint: 'Bíle přerušovaná barva znamená, že rychlostní limit není kulaté číslo.'
+    dashedHint: 'Bíle přerušovaná barva znamená, že rychlostní limit není kulaté číslo.',
+    forumUrl: 'https://www.waze.com/forum/viewtopic.php?f=22&t=166406'
   },
   sk: {
     scriptName: 'WME Rýchlosti',
@@ -24,7 +25,8 @@ const i18n: Record<LocaleCode, Translations> = {
     hideWithoutSpeeds: 'Skryť úseky bez rýchlostí',
     noSpeedsSegmentsOtherTitle: 'Skryť rýchlosti na iných jazdných úsekoch bez rýchlostí',
     transparentColorsTitle: 'Priehľadná farba',
-    dashedHint: 'Biele prerušované čiary znamenajú, že rýchlostný limit nie je zaokrúhlené číslo.'
+    dashedHint: 'Biele prerušované čiary znamenajú, že rýchlostný limit nie je zaokrúhlené číslo.',
+    forumUrl: 'https://www.waze.com/forum/viewtopic.php?f=22&t=166406'
   },
   en: {
     scriptName: 'WME Speeds',
@@ -36,7 +38,8 @@ const i18n: Record<LocaleCode, Translations> = {
     hideWithoutSpeeds: 'Hide segments without speeds',
     noSpeedsSegmentsOtherTitle: 'Hide speeds on other-drivable segments without speeds',
     transparentColorsTitle: 'Transparent color',
-    dashedHint: 'White dashed styles mean that the speed limit is not round number.'
+    dashedHint: 'White dashed styles mean that the speed limit is not round number.',
+    forumUrl: 'https://www.waze.com/forum/viewtopic.php?f=819&t=166497'
   },
   he: {
     scriptName: 'מהירות WME',
@@ -48,7 +51,8 @@ const i18n: Record<LocaleCode, Translations> = {
     hideWithoutSpeeds: 'הסתר מקטעים ללא מהירויות',
     noSpeedsSegmentsOtherTitle: 'הסתר מהירויות במקטעים אחרים ללא נתוני מהירות',
     transparentColorsTitle: 'צבע שקוף',
-    dashedHint: 'קו לבן מקווקו מציין שהמהירות אינה מספר עגול.'
+    dashedHint: 'קו לבן מקווקו מציין שהמהירות אינה מספר עגול.',
+    forumUrl: 'https://www.waze.com/forum/viewtopic.php?f=819&t=166497'
   },
   pl: {
     scriptName: 'WME Prędkości',
@@ -60,7 +64,8 @@ const i18n: Record<LocaleCode, Translations> = {
     hideWithoutSpeeds: 'Ukryj odcinki bez prędkości',
     noSpeedsSegmentsOtherTitle: 'Ukryj prędkości na innych przejezdnych odcinkach bez prędkości',
     transparentColorsTitle: 'Przezroczysty kolor',
-    dashedHint: 'Białe linie przerywane oznaczają, że ograniczenie prędkości nie jest liczbą zaokrągloną.'
+    dashedHint: 'Białe linie przerywane oznaczają, że ograniczenie prędkości nie jest liczbą zaokrągloną.',
+    forumUrl: 'https://www.waze.com/forum/viewtopic.php?f=819&t=166497'
   }
 }
 
