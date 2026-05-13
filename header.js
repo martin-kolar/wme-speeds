@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        WME Speeds
 // @namespace   https://greasyfork.org/cs/scripts/12402-wme-speeds
-// @version     1.0.5
+// @version     1.0.6
 // @description Adds colors to road segments to show their speeds
 // @author      Martin Kolář
 // @match       https://www.waze.com/editor*

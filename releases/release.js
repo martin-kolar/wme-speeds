@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        WME Speeds
 // @namespace   https://greasyfork.org/cs/scripts/12402-wme-speeds
-// @version     1.0.5
+// @version     1.0.6
 // @description Adds colors to road segments to show their speeds
 // @author      Martin Kolář
 // @match       https://www.waze.com/editor*
@@ -29,6 +29,7 @@
             invertSpeedsTitleNonDrivable: 'Zobrazit pouze segmenty bez rychlostí',
             hideWithoutSpeeds: 'Skrýt segmenty bez rychlostí',
             noSpeedsSegmentsOtherTitle: 'Skrýt rychlosti na nedůležitých segmentech',
+            highlightOtherDrivableTitle: 'Zvýraznit nedůležité segmenty s rychlostí (žlutě)',
             transparentColorsTitle: 'Průsvitné barvy',
             dashedHint: 'Bíle přerušovaná barva znamená, že rychlostní limit není kulaté číslo.',
             forumUrl: 'https://www.waze.com/forum/viewtopic.php?f=22&t=166406'
@@ -42,6 +43,7 @@
             invertSpeedsTitleNonDrivable: 'Zobraziť iba úseky bez rýchlostí',
             hideWithoutSpeeds: 'Skryť úseky bez rýchlostí',
             noSpeedsSegmentsOtherTitle: 'Skryť rýchlosti na iných jazdných úsekoch bez rýchlostí',
+            highlightOtherDrivableTitle: 'Zvýrazniť iné jazdné úseky s rýchlosťou (žlto)',
             transparentColorsTitle: 'Priehľadná farba',
             dashedHint: 'Biele prerušované čiary znamenajú, že rýchlostný limit nie je zaokrúhlené číslo.',
             forumUrl: 'https://www.waze.com/forum/viewtopic.php?f=22&t=166406'
@@ -55,6 +57,7 @@
             invertSpeedsTitleNonDrivable: 'Show only segments without speeds',
             hideWithoutSpeeds: 'Hide segments without speeds',
             noSpeedsSegmentsOtherTitle: 'Hide speeds on other-drivable segments without speeds',
+            highlightOtherDrivableTitle: 'Highlight other-drivable segments with speed (yellow)',
             transparentColorsTitle: 'Transparent color',
             dashedHint: 'White dashed styles mean that the speed limit is not round number.',
             forumUrl: 'https://www.waze.com/forum/viewtopic.php?f=819&t=166497'
@@ -68,6 +71,7 @@
             invertSpeedsTitleNonDrivable: 'הצג רק מקטעים ללא מהירויות',
             hideWithoutSpeeds: 'הסתר מקטעים ללא מהירויות',
             noSpeedsSegmentsOtherTitle: 'הסתר מהירויות במקטעים אחרים ללא נתוני מהירות',
+            highlightOtherDrivableTitle: 'הדגש מקטעים אחרים עם מהירות (צהוב)',
             transparentColorsTitle: 'צבע שקוף',
             dashedHint: 'קו לבן מקווקו מציין שהמהירות אינה מספר עגול.',
             forumUrl: 'https://www.waze.com/forum/viewtopic.php?f=819&t=166497'
@@ -81,6 +85,7 @@
             invertSpeedsTitleNonDrivable: 'Pokaż tylko odcinki bez prędkości',
             hideWithoutSpeeds: 'Ukryj odcinki bez prędkości',
             noSpeedsSegmentsOtherTitle: 'Ukryj prędkości na innych przejezdnych odcinkach bez prędkości',
+            highlightOtherDrivableTitle: 'Podświetl inne przejezdne odcinki z prędkością (żółty)',
             transparentColorsTitle: 'Przezroczysty kolor',
             dashedHint: 'Białe linie przerywane oznaczają, że ograniczenie prędkości nie jest liczbą zaokrągloną.',
             forumUrl: 'https://www.waze.com/forum/viewtopic.php?f=819&t=166497'
@@ -117,31 +122,84 @@
             otherDrivable: null,
             transparent: null,
             hideWithoutSpeeds: null,
+            highlightOtherDrivable: null,
             checkboxIds: {
                 otherDrivable: '_wmeSpeedsOtherDrivable',
                 transparent: '_wmeSpeedsTransparent',
                 invertNonDrivable: '_wmeSpeedsInvertNonDrivable',
-                hideWithoutSpeeds: '_wmeSpeedsHideWithoutSpeeds'
+                hideWithoutSpeeds: '_wmeSpeedsHideWithoutSpeeds',
+                highlightOtherDrivable: '_wmeSpeedsHighlightOtherDrivable',
             }
         };
         function getTranslation(key) {
             const localeCode = wmeSDK.Settings.getLocale().localeCode;
             return getTranslations(localeCode)[key] || key;
         }
+        const _shortcutId = `-${_styleName}-shortcut`;
+        const _shortcutDefault = 'A+s';
+        const _shortcutLsKey = 'WMESpeedsShortcutKey';
+        function sdkKeysToString(keys) {
+            const match = keys.match(/^(\d+),(\d+)$/);
+            if (!match)
+                return keys;
+            const mod = parseInt(match[1], 10);
+            const code = parseInt(match[2], 10);
+            let prefix = '';
+            if (mod & 1)
+                prefix += 'C+';
+            if (mod & 4)
+                prefix += 'A+';
+            if (mod & 2)
+                prefix += 'S+';
+            return prefix + String.fromCharCode(code).toLowerCase();
+        }
+        function getSavedShortcutKey() {
+            const saved = localStorage.getItem(_shortcutLsKey);
+            if (!saved)
+                return _shortcutDefault;
+            return sdkKeysToString(saved);
+        }
+        function saveCurrentShortcutKey() {
+            try {
+                const shortcuts = wmeSDK.Shortcuts.getAllShortcuts();
+                const current = shortcuts.find(s => s.shortcutId === _shortcutId) ?? shortcuts[0];
+                if (current?.shortcutKeys) {
+                    localStorage.setItem(_shortcutLsKey, current.shortcutKeys);
+                }
+            }
+            catch (_) { }
+        }
         function setKeyboardShortcuts() {
+            const shortcutCallback = () => {
+                wmeSDK.LayerSwitcher.setLayerCheckboxChecked({
+                    name: _layerName,
+                    isChecked: !wmeSDK.LayerSwitcher.isLayerCheckboxChecked({ name: _layerName }),
+                });
+                drawSegments();
+                saveSettings();
+            };
+            let shortcutKeys = getSavedShortcutKey();
+            if (wmeSDK.Shortcuts.isShortcutRegistered({ shortcutId: _shortcutId })) {
+                const shortcuts = wmeSDK.Shortcuts.getAllShortcuts();
+                const existing = shortcuts.find(s => s.shortcutId === _shortcutId) ?? shortcuts[0];
+                if (existing?.shortcutKeys) {
+                    shortcutKeys = sdkKeysToString(existing.shortcutKeys);
+                    localStorage.setItem(_shortcutLsKey, existing.shortcutKeys);
+                }
+                try {
+                    wmeSDK.Shortcuts.deleteShortcut({ shortcutId: _shortcutId });
+                }
+                catch (_) {
+                    return;
+                }
+            }
             wmeSDK.Shortcuts.createShortcut({
-                callback: () => {
-                    wmeSDK.LayerSwitcher.setLayerCheckboxChecked({
-                        name: _layerName,
-                        isChecked: !wmeSDK.LayerSwitcher.isLayerCheckboxChecked({ name: _layerName }),
-                    });
-                    drawSegments();
-                    saveSettings();
-                },
+                callback: shortcutCallback,
                 description: `${getTranslation('scriptName')} shortcut`,
-                shortcutId: `-${_styleName}-shortcut`,
-                shortcutKeys: 'A+s',
+                shortcutId: _shortcutId,
+                shortcutKeys,
             });
+            unsafeWindow.addEventListener('beforeunload', saveCurrentShortcutKey);
         }
         function getStylesRules() {
             let rules = [];
@@ -217,6 +275,14 @@
                     strokeOpacity: _config.transparent ? .75 : 1
                 },
             });
+            rules.push({
+                predicate: (featureProperties) => !!featureProperties.otherDrivableWithSpeed,
+                style: {
+                    strokeColor: '#FFD700',
+                    strokeWidth: 8,
+                    strokeOpacity: _config.transparent ? .5 : 1
+                },
+            });
             return rules;
         }
         function addLayer() {
@@ -237,6 +303,7 @@
             wmeSDK.Events.once({ eventName: 'wme-ready' }).then(wmeReady);
             wmeSDK.Events.on({ eventName: 'wme-map-move', eventHandler: drawSegments });
             wmeSDK.Events.on({ eventName: 'wme-map-data-loaded', eventHandler: drawSegments });
+            wmeSDK.Events.on({ eventName: 'wme-map-data-loaded', eventHandler: saveCurrentShortcutKey });
             wmeSDK.Events.on({
                 eventName: 'wme-layer-checkbox-toggled',
                 eventHandler: (event) => {
@@ -256,6 +323,7 @@
             });
             getId(_config.checkboxIds.invertNonDrivable).addEventListener('change', settingsChanged);
             getId(_config.checkboxIds.hideWithoutSpeeds).addEventListener('change', settingsChanged);
+            getId(_config.checkboxIds.highlightOtherDrivable).addEventListener('change', settingsChanged);
             drawSegments();
         }
         function resetLayers() {
@@ -342,6 +410,7 @@
           ${optionHtml(_config.checkboxIds.invertNonDrivable, 'invertSpeedsTitleNonDrivable')}
           ${optionHtml(_config.checkboxIds.hideWithoutSpeeds, 'hideWithoutSpeeds')}
           ${optionHtml(_config.checkboxIds.otherDrivable, 'noSpeedsSegmentsOtherTitle')}
+          ${optionHtml(_config.checkboxIds.highlightOtherDrivable, 'highlightOtherDrivableTitle')}
           ${optionHtml(_config.checkboxIds.transparent, 'transparentColorsTitle')}
         </ul>
 
@@ -364,6 +433,7 @@
             getId(_config.checkboxIds.transparent).checked = storageData[4];
             getId(_config.checkboxIds.invertNonDrivable).checked = storageData[6];
             getId(_config.checkboxIds.hideWithoutSpeeds).checked = storageData[8];
+            getId(_config.checkboxIds.highlightOtherDrivable).checked = storageData[9] || false;
         }
         function getLocalStorage() {
             if (localStorage.WMESpeedsScript) {
@@ -428,6 +498,7 @@
                 _config.invertColors = getId(_config.checkboxIds.invertNonDrivable).checked;
                 _config.hideWithoutSpeeds = getId(_config.checkboxIds.hideWithoutSpeeds).checked;
                 _config.otherDrivable = getId(_config.checkboxIds.otherDrivable).checked;
+                _config.highlightOtherDrivable = getId(_config.checkboxIds.highlightOtherDrivable).checked;
                 var speedDiv = _config.useMph ? 5 : 10;
                 var maxSpeed = _config.useMph ? _config.maxSpeedMph : _config.maxSpeedKmph;
                 segments.forEach(segment => {
@@ -449,8 +520,15 @@
                             return;
                         }
                     }
-                    if (_config.otherDrivable && fwdSpeed.otherDrivableType) {
-                        return;
+                    if (fwdSpeed.otherDrivableType) {
+                        const hasSpeed = (fwdSpeed.value > 0 && fwdSpeed.direction) || (revSpeed.value > 0 && revSpeed.direction);
+                        if (_config.highlightOtherDrivable && hasSpeed) {
+                            drawSegment(segment, { otherDrivableWithSpeed: 1 });
+                            return;
+                        }
+                        if (_config.otherDrivable) {
+                            return;
+                        }
                     }
                     if (fwdSpeed.value === revSpeed.value || (fwdSpeed.value >= 0 && !revSpeed.direction) || (revSpeed.value >= -1 && !fwdSpeed.direction)) {
                         drawSegment(segment, {
@@ -494,6 +572,7 @@
                 options[6] = getId(_config.checkboxIds.invertNonDrivable).checked;
                 options[7] = wmeSDK.LayerSwitcher.isLayerCheckboxChecked({ name: _layerName });
                 options[8] = getId(_config.checkboxIds.hideWithoutSpeeds).checked;
+                options[9] = getId(_config.checkboxIds.highlightOtherDrivable).checked;
                 localStorage.WMESpeedsScript = JSON.stringify(options);
             }
         }

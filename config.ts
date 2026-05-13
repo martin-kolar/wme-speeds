@@ -11,6 +11,7 @@ const i18n: Record<LocaleCode, Translations> = {
     invertSpeedsTitleNonDrivable: 'Zobrazit pouze segmenty bez rychlostí',
     hideWithoutSpeeds: 'Skrýt segmenty bez rychlostí',
     noSpeedsSegmentsOtherTitle: 'Skrýt rychlosti na nedůležitých segmentech',
+    highlightOtherDrivableTitle: 'Zvýraznit nedůležité segmenty s rychlostí (žlutě)',
     transparentColorsTitle: 'Průsvitné barvy',
     dashedHint: 'Bíle přerušovaná barva znamená, že rychlostní limit není kulaté číslo.',
     forumUrl: 'https://www.waze.com/forum/viewtopic.php?f=22&t=166406'
@@ -24,6 +25,7 @@ const i18n: Record<LocaleCode, Translations> = {
     invertSpeedsTitleNonDrivable: 'Zobraziť iba úseky bez rýchlostí',
     hideWithoutSpeeds: 'Skryť úseky bez rýchlostí',
     noSpeedsSegmentsOtherTitle: 'Skryť rýchlosti na iných jazdných úsekoch bez rýchlostí',
+    highlightOtherDrivableTitle: 'Zvýrazniť iné jazdné úseky s rýchlosťou (žlto)',
     transparentColorsTitle: 'Priehľadná farba',
     dashedHint: 'Biele prerušované čiary znamenajú, že rýchlostný limit nie je zaokrúhlené číslo.',
     forumUrl: 'https://www.waze.com/forum/viewtopic.php?f=22&t=166406'
@@ -37,6 +39,7 @@ const i18n: Record<LocaleCode, Translations> = {
     invertSpeedsTitleNonDrivable: 'Show only segments without speeds',
     hideWithoutSpeeds: 'Hide segments without speeds',
     noSpeedsSegmentsOtherTitle: 'Hide speeds on other-drivable segments without speeds',
+    highlightOtherDrivableTitle: 'Highlight other-drivable segments with speed (yellow)',
     transparentColorsTitle: 'Transparent color',
     dashedHint: 'White dashed styles mean that the speed limit is not round number.',
     forumUrl: 'https://www.waze.com/forum/viewtopic.php?f=819&t=166497'
@@ -50,6 +53,7 @@ const i18n: Record<LocaleCode, Translations> = {
     invertSpeedsTitleNonDrivable: 'הצג רק מקטעים ללא מהירויות',
     hideWithoutSpeeds: 'הסתר מקטעים ללא מהירויות',
     noSpeedsSegmentsOtherTitle: 'הסתר מהירויות במקטעים אחרים ללא נתוני מהירות',
+    highlightOtherDrivableTitle: 'הדגש מקטעים אחרים עם מהירות (צהוב)',
     transparentColorsTitle: 'צבע שקוף',
     dashedHint: 'קו לבן מקווקו מציין שהמהירות אינה מספר עגול.',
     forumUrl: 'https://www.waze.com/forum/viewtopic.php?f=819&t=166497'
@@ -63,6 +67,7 @@ const i18n: Record<LocaleCode, Translations> = {
     invertSpeedsTitleNonDrivable: 'Pokaż tylko odcinki bez prędkości',
     hideWithoutSpeeds: 'Ukryj odcinki bez prędkości',
     noSpeedsSegmentsOtherTitle: 'Ukryj prędkości na innych przejezdnych odcinkach bez prędkości',
+    highlightOtherDrivableTitle: 'Podświetl inne przejezdne odcinki z prędkością (żółty)',
     transparentColorsTitle: 'Przezroczysty kolor',
     dashedHint: 'Białe linie przerywane oznaczają, że ograniczenie prędkości nie jest liczbą zaokrągloną.',
     forumUrl: 'https://www.waze.com/forum/viewtopic.php?f=819&t=166497'

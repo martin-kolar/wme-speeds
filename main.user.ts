@@ -3,6 +3,7 @@ import { getTranslations } from "./config.js";
 import type { Segment } from "wme-sdk-typings";
 
 declare var WazeWrap: any;
+declare var unsafeWindow: Window & typeof globalThis;
 
 unsafeWindow.SDK_INITIALIZED.then(initScript)
 
@@ -37,11 +38,13 @@ function initScript() {
     otherDrivable: null as boolean | null,
     transparent: null as boolean | null,
     hideWithoutSpeeds: null as boolean | null,
+    highlightOtherDrivable: null as boolean | null,
     checkboxIds: {
       otherDrivable: '_wmeSpeedsOtherDrivable',
       transparent: '_wmeSpeedsTransparent',
       invertNonDrivable: '_wmeSpeedsInvertNonDrivable',
-      hideWithoutSpeeds: '_wmeSpeedsHideWithoutSpeeds'
+      hideWithoutSpeeds: '_wmeSpeedsHideWithoutSpeeds',
+      highlightOtherDrivable: '_wmeSpeedsHighlightOtherDrivable',
     }
   }
 
@@ -52,21 +55,77 @@ function initScript() {
     return getTranslations(localeCode)[key] || key
   }
 
-  function setKeyboardShortcuts() {
-    wmeSDK.Shortcuts.createShortcut({
-      callback: () => {
-        wmeSDK.LayerSwitcher.setLayerCheckboxChecked({
-          name: _layerName,
-          isChecked: !wmeSDK.LayerSwitcher.isLayerCheckboxChecked({ name: _layerName }),
-        })
+  const _shortcutId = `-${_styleName}-shortcut`
+  const _shortcutDefault = 'A+s'
+  const _shortcutLsKey = 'WMESpeedsShortcutKey'
 
-        drawSegments()
-        saveSettings()
-      },
+  // getAllShortcuts() returns keys in numeric format "modifierBitmask,keyCode" (e.g. "4,84")
+  // but createShortcut() expects string format "A+t". Convert between them.
+  // Modifier bitmask: Ctrl=1, Shift=2, Alt=4
+  function sdkKeysToString(keys: string): string {
+    const match = keys.match(/^(\d+),(\d+)$/)
+    if (!match) return keys
+    const mod = parseInt(match[1], 10)
+    const code = parseInt(match[2], 10)
+    let prefix = ''
+    if (mod & 1) prefix += 'C+'
+    if (mod & 4) prefix += 'A+'
+    if (mod & 2) prefix += 'S+'
+    return prefix + String.fromCharCode(code).toLowerCase()
+  }
+
+  function getSavedShortcutKey(): string {
+    const saved = localStorage.getItem(_shortcutLsKey)
+    if (!saved) return _shortcutDefault
+    return sdkKeysToString(saved)
+  }
+
+  function saveCurrentShortcutKey(): void {
+    try {
+      const shortcuts = wmeSDK.Shortcuts.getAllShortcuts()
+      const current = shortcuts.find(s => s.shortcutId === _shortcutId) ?? shortcuts[0]
+      if (current?.shortcutKeys) {
+        localStorage.setItem(_shortcutLsKey, current.shortcutKeys)
+      }
+    } catch (_) { /* ignore errors during unload */ }
+  }
+
+  function setKeyboardShortcuts() {
+    const shortcutCallback = () => {
+      wmeSDK.LayerSwitcher.setLayerCheckboxChecked({
+        name: _layerName,
+        isChecked: !wmeSDK.LayerSwitcher.isLayerCheckboxChecked({ name: _layerName }),
+      })
+      drawSegments()
+      saveSettings()
+    }
+
+    let shortcutKeys = getSavedShortcutKey()
+
+    if (wmeSDK.Shortcuts.isShortcutRegistered({ shortcutId: _shortcutId })) {
+      const shortcuts = wmeSDK.Shortcuts.getAllShortcuts()
+      const existing = shortcuts.find(s => s.shortcutId === _shortcutId) ?? shortcuts[0]
+      if (existing?.shortcutKeys) {
+        shortcutKeys = sdkKeysToString(existing.shortcutKeys)
+        localStorage.setItem(_shortcutLsKey, existing.shortcutKeys)
+      }
+      try {
+        wmeSDK.Shortcuts.deleteShortcut({ shortcutId: _shortcutId })
+      } catch (_) {
+        return
+      }
+    }
+
+    wmeSDK.Shortcuts.createShortcut({
+      callback: shortcutCallback,
       description: `${getTranslation('scriptName')} shortcut`,
-      shortcutId: `-${_styleName}-shortcut`,
-      shortcutKeys: 'A+s',
+      shortcutId: _shortcutId,
+      shortcutKeys,
     })
+
+    // Save the key before the page unloads to catch changes the user made
+    // without any map navigation in between
+    unsafeWindow.addEventListener('beforeunload', saveCurrentShortcutKey)
   }
 
   function getStylesRules(): { predicate: (featureProperties: any) => boolean, style: any }[] {
@@ -153,6 +212,15 @@ function initScript() {
       },
     })
 
+    rules.push({
+      predicate: (featureProperties: any) => !!featureProperties.otherDrivableWithSpeed,
+      style: {
+        strokeColor: '#FFD700',
+        strokeWidth: 8,
+        strokeOpacity: _config.transparent ? .5 : 1
+      },
+    })
+
     return rules
   }
 
@@ -178,6 +246,7 @@ function initScript() {
     wmeSDK.Events.once({ eventName: 'wme-ready' }).then(wmeReady)
     wmeSDK.Events.on({ eventName: 'wme-map-move', eventHandler: drawSegments })
     wmeSDK.Events.on({ eventName: 'wme-map-data-loaded', eventHandler: drawSegments })
+    wmeSDK.Events.on({ eventName: 'wme-map-data-loaded', eventHandler: saveCurrentShortcutKey })
     wmeSDK.Events.on({
       eventName: 'wme-layer-checkbox-toggled',
       eventHandler: (event) => {
@@ -198,6 +267,7 @@ function initScript() {
     })
     getId(_config.checkboxIds.invertNonDrivable).addEventListener('change', settingsChanged)
     getId(_config.checkboxIds.hideWithoutSpeeds).addEventListener('change', settingsChanged)
+    getId(_config.checkboxIds.highlightOtherDrivable).addEventListener('change', settingsChanged)
 
     drawSegments()
   }
@@ -300,6 +370,7 @@ function initScript() {
           ${optionHtml(_config.checkboxIds.invertNonDrivable, 'invertSpeedsTitleNonDrivable')}
           ${optionHtml(_config.checkboxIds.hideWithoutSpeeds, 'hideWithoutSpeeds')}
           ${optionHtml(_config.checkboxIds.otherDrivable, 'noSpeedsSegmentsOtherTitle')}
+          ${optionHtml(_config.checkboxIds.highlightOtherDrivable, 'highlightOtherDrivableTitle')}
           ${optionHtml(_config.checkboxIds.transparent, 'transparentColorsTitle')}
         </ul>
 
@@ -323,6 +394,7 @@ function initScript() {
     getId(_config.checkboxIds.transparent).checked = storageData[4]
     getId(_config.checkboxIds.invertNonDrivable).checked = storageData[6]
     getId(_config.checkboxIds.hideWithoutSpeeds).checked = storageData[8]
+    getId(_config.checkboxIds.highlightOtherDrivable).checked = storageData[9] || false
   }
 
   function getLocalStorage(): any {
@@ -411,6 +483,7 @@ function initScript() {
       _config.invertColors = getId(_config.checkboxIds.invertNonDrivable).checked
       _config.hideWithoutSpeeds = getId(_config.checkboxIds.hideWithoutSpeeds).checked
       _config.otherDrivable = getId(_config.checkboxIds.otherDrivable).checked
+      _config.highlightOtherDrivable = getId(_config.checkboxIds.highlightOtherDrivable).checked
 
       var speedDiv = _config.useMph ? 5 : 10
       var maxSpeed = _config.useMph ? _config.maxSpeedMph : _config.maxSpeedKmph
@@ -439,8 +512,15 @@ function initScript() {
           }
         }
 
-        if (_config.otherDrivable && fwdSpeed.otherDrivableType) {
-          return
+        if (fwdSpeed.otherDrivableType) {
+          const hasSpeed = (fwdSpeed.value > 0 && fwdSpeed.direction) || (revSpeed.value > 0 && revSpeed.direction)
+          if (_config.highlightOtherDrivable && hasSpeed) {
+            drawSegment(segment, { otherDrivableWithSpeed: 1 })
+            return
+          }
+          if (_config.otherDrivable) {
+            return
+          }
         }
 
         if (fwdSpeed.value === revSpeed.value || (fwdSpeed.value >= 0 && !revSpeed.direction) || (revSpeed.value >= -1 && !fwdSpeed.direction)) {
@@ -492,6 +572,7 @@ function initScript() {
       options[6] = getId(_config.checkboxIds.invertNonDrivable).checked
       options[7] = wmeSDK.LayerSwitcher.isLayerCheckboxChecked({ name: _layerName })
       options[8] = getId(_config.checkboxIds.hideWithoutSpeeds).checked
+      options[9] = getId(_config.checkboxIds.highlightOtherDrivable).checked
 
       localStorage.WMESpeedsScript = JSON.stringify(options)
     }
